@@ -23,7 +23,7 @@ Para Windows:
 - Crea el entorno virtual (ejemplo: .venv como nombre de carpeta):  
 python -m venv .venv  
 - Activa el entorno virtual:  
-.\.venv\Scripts\activate  
+```.\.venv\Scripts\activate  
 
 Para Linux:  
 - Entra a tu proyecto:  
