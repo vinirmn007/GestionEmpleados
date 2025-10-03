@@ -1,0 +1,88 @@
+# --------------------
+# Python / FastAPI
+# --------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.egg
+*.egg-info/
+.eggs/
+
+# Entorno virtual
+venv/
+env/
+.venv/
+ENV/
+
+# Logs y dependencias
+*.log
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Compilados de Cython
+*.c
+*.cpp
+*.so
+
+# --------------------
+# Test & Coverage
+# --------------------
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pydantic / Cache
+*.json.gz
+
+# Uvicorn / PID
+*.pid
+
+# --------------------
+# IDEs / Editores
+# --------------------
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.sln.docstates
+
+# Rider / JetBrains
+.idea/
+
+# Sublime
+*.sublime-project
+*.sublime-workspace
+
+# --------------------
+# Build & Distribución
+# --------------------
+dist/
+build/
+*.manifest
+*.spec
+
+# --------------------
+# Archivos del sistema
+# --------------------
+.DS_Store
+Thumbs.db
+
+# --------------------
+# Entornos locales
+# --------------------
+.env
+.env.*
