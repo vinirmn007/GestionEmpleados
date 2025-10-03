@@ -1,29 +1,55 @@
-Gestion de Empleados
-Carrera de Computación | UNL
+# Gestión de Empleados
+**Carrera de Computación | UNL**
 
-GRUPO 8
+## Grupo 8
 - Josue Torres
 - Alexis Roman
 
-Requerimientos del proyecto.  
+---
 
-Python 3.12.6  
-FastAPI 0.0.13  
+## Requerimientos del Proyecto
+- **Python**: 3.12.6  
+- **FastAPI**: 0.0.13  
 
-Arquitectura seleccionada.  
-Estándares de codificación adoptados.  
-Flujo de trabajo con GitFlow.  
-Instrucciones de ejecución.  
+---
 
-1. Instalar python 3.12.6  
+## Arquitectura Seleccionada
+Se implementará la **arquitectura de microservicios**, utilizando principalmente el framework **FastAPI**, aunque no se descarta el uso de otras tecnologías según las necesidades del proyecto.
 
-2. Crear un entorno virtual para la ejecucion de FastAPI, de la siguiente manera:  
-Para Windows: 
+---
+
+## Estándares de Codificación Adoptados
+Se seguirán estándares basados en **legibilidad, consistencia, escalabilidad y descriptividad**:
+
+- Uso de **CamelCase** para nombres de variables y funciones.
+- Uso correcto de **sangrías**.
+- Inclusión de **comentarios descriptivos**.
+- **Modularización** de los componentes.
+
+---
+
+## Flujo de Trabajo con GitFlow
+Se implementará **GitFlow**, utilizando las siguientes ramas para gestionar los cambios:
+
+- `main`
+- `develop`
+- `feature/...`
+
+---
+
+## Instrucciones de Ejecución
+
+### 1. Instalar Python 3.12.6
+Descargar e instalar la versión 3.12.6 desde la página oficial de Python.
+
+### 2. Crear un Entorno Virtual
+
+#### En Windows:
 - Abre PowerShell o CMD en la carpeta de tu proyecto.  
 - Crea el entorno virtual (ejemplo: .venv como nombre de carpeta):  
 python -m venv .venv  
 - Activa el entorno virtual:  
-```.\.venv\Scripts\activate  
+.\.venv\Scripts\activate  
 
 Para Linux:  
 - Entra a tu proyecto:  
