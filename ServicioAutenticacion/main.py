@@ -1,5 +1,4 @@
 from fastapi import FastAPI, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 from datetime import timedelta
 
 from fastapi_jwt_auth3 import AuthJWT
@@ -9,12 +8,7 @@ from fastapi import Request
 from fastapi.responses import JSONResponse
 
 from .models import models, db_model
-from . import controller
-from .database_config import engine, get_db
 from .secret_keys_settings import settings
-
-#crea la tabla en db
-db_model.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Servicio Autenticacion", version="1.0.0")
 
@@ -26,24 +20,34 @@ def read_root():
 def get_config():
     return settings
 
-#validar si el token esta en denylist
-@AuthJWT.token_in_denylist_loader
-def token_in_denylist(decrypted_token: dict):
-    jti = decrypted_token["jti"]
-    
-    db = next(get_db()) 
-    
-    return controller.is_token_revoked(db, jti)
-
 @app.post("auth/login", response_model=models.Token, tags=["Autenticacion"])
-def login(data: models.LoginRequest, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
+def login(data: models.LoginRequest, Authorize: AuthJWT = Depends()):
+    #LO SIGUIENTE SE OBTIENE CON EL SERVICIO DE USUARIOS
+    #is_valid_user = validar que exista ese user
+    #user_id = obtener el user id del usuario que hace la peticion
+
+    #SIMULACIONNNNNNNNNN:
+    is_valid_user = True
+    user_id = 1
+
+    if not is_valid_user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Email o contraseña incorrectos"
+        )
     
+    access_token = Authorize.create_access_token(
+        subject=user_id,
+        expires_time=timedelta(hours=1)
+    )
+        
+    return {
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
     pass
 
 @app.post("auth/logout")
 def logout():
     return {"mensaje": "¡Adiós desde el Servicio Autenticacion!"}
 
-@app.post("auth/refresh")
-def refresh_token():
-    return {"mensaje": "Token de autenticación renovado"}
