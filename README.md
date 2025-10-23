@@ -64,3 +64,10 @@ Descargar e instalar la versión 3.12.6 desde la página oficial de Python.
 
 ### 4. Ejecutar el proyecto:  
 ```fastapi dev main.py```
+
+##Instalar MariaDB
+```sudo apt update```  
+```sudo apt install mariadb-server mariadb-client```  
+```sudo mariadb-secure-installation```  
+Verificar la instalacion:  
+```mariadb -u root -p```  
