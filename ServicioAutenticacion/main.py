@@ -25,10 +25,12 @@ def login(data: models.LoginRequest, Authorize: AuthJWT = Depends()):
     #LO SIGUIENTE SE OBTIENE CON EL SERVICIO DE USUARIOS
     #is_valid_user = validar que exista ese user
     #user_id = obtener el user id del usuario que hace la peticion
+    #user_roles = obtener rles de usuario de la bd
 
     #SIMULACIONNNNNNNNNN:
     is_valid_user = True
     user_id = 1
+    user_roles = ["user", "admin"]
 
     if not is_valid_user:
         raise HTTPException(
@@ -36,8 +38,13 @@ def login(data: models.LoginRequest, Authorize: AuthJWT = Depends()):
             detail="Email o contraseña incorrectos"
         )
     
+    claims = {
+        "roles": user_roles
+    }
+    
     access_token = Authorize.create_access_token(
         subject=user_id,
+        user_claims=claims,
         expires_time=timedelta(hours=1)
     )
         
