@@ -44,14 +44,14 @@ services:
   #Microservicios
   servicio-autenticacion:
     build:
-      context: ./servicio-autenticacion
+      context: ./ServicioAutenticacion
     container_name: servicio-autenticacion
     networks:
       - sge-network
 
   servicio-usuarios:
     build:
-      context: ./servicio-usuarios
+      context: ./ServicioUsuarios
     container_name: servicio-usuarios
     depends_on:
       - db-sge
