@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  #API GATEWAY KONG
+  kong-gateway:
+    image: kong:latest
+    container_name: kong-gateway
+    environment:
+      KONG_DATABASE: "off"
+      
+      KONG_DECLARATIVE_CONFIG: "/etc/kong/kong.yaml"
+      
+      KONG_PROXY_LISTEN: "0.0.0.0:8000"
+      KONG_ADMIN_LISTEN: "0.0.0.0:8001"
+      
+      KONG_STATUS_LISTEN: "0.0.0.0:8002"
+
+    ports:
+      # 80:8000 -> Mapea el puerto 80 (público) al puerto proxy (8000)
+      - "80:8000" 
+      # 8001:8001 -> Mapea el puerto 8001 (Admin) para que lo uses tú
+      - "8001:8001" 
+
+    volumes:
+      - ./APIGateway/kong.yaml:/etc/kong/kong.yaml
+
+    networks:
+      - sge-network
+    depends_on:
+      - servicio-autenticacion
+      - servicio-usuarios
+
+  #DB
+  db-sge:
+    image: mariadb:latest
+    container_name: db-sge
+    environment:
+      MARIADB_ROOT_PASSWORD: "al.22825"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - sge-network
+
+  #Microservicios
+  servicio-autenticacion:
+    build:
+      context: ./servicio-autenticacion
+    container_name: servicio-autenticacion
+    networks:
+      - sge-network
+
+  servicio-usuarios:
+    build:
+      context: ./servicio-usuarios
+    container_name: servicio-usuarios
+    depends_on:
+      - db-sge
+    environment:
+      DB_HOST: "db-sge"
+      DB_PASSWORD: "al.22825"
+    networks:
+      - sge-network
+
+networks:
+  sge-network:
+    driver: bridge
+
+volumes:
+  db_data:

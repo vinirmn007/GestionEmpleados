@@ -1,0 +1,21 @@
+_format_version: "3.0"
+
+services:
+- name: auth-service
+  url: http://servicio-autenticacion:8000
+- name: user-service
+  url: http://servicio-usuarios:8000
+
+routes:
+- name: auth-route
+  service: auth-service
+  paths:
+  - /auth
+  strip_path: false
+
+- name: user-route
+  service: user-service
+  paths:
+  - /users
+  strip_path: false
+
