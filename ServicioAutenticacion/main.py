@@ -1,8 +1,8 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from datetime import timedelta
 
-from fastapi_jwt_auth3 import AuthJWT
-#from fastapi_jwt_auth3.exceptions import AuthJWTException
+from fastapi_jwt_auth import AuthJWT
+#from fastapi_jwt_auth.exceptions import AuthJWTException
 from pydantic import BaseModel
 from fastapi import Request
 from fastapi.responses import JSONResponse
