@@ -1,5 +1,4 @@
-from pydantic import BaseModel, EmailStr
-from datetime import datetime
+from pydantic.v1 import BaseModel, EmailStr
 
 class Token(BaseModel):
     access_token: str
