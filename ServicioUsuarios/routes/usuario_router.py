@@ -1,82 +1,97 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
 from typing import List
-from models.usuario_model import Usuario, UsuarioCreate, PasswordCreate
-
+from database import SessionLocal
+from schemas.usuario import UserRequest, UsuarioCreate, UsuarioRead, UserRolesResponse, UserIdResponse
+from models.usuario_model import Usuario
+from crud.usuarioCrud import (
+    get_user,
+    get_user_by_email,
+    create_user,
+    update_user,
+    delete_user
+)
 
 router = APIRouter(
-    prefix="/users",
+    prefix="/usuarios",
     tags=["Usuarios"]
 )
 
-# Simulación temporal de "base de datos"
-usuarios_db = [
-    Usuario(id=1, nombres="Ana", apellidos="López", email="ana@empresa.com", celular="0999999999", rol="empleado"),
-    Usuario(id=2, nombres="Carlos", apellidos="Pérez", email="carlos@empresa.com", celular="0988888888", rol="supervisor"),
-]
 
-# -----------------------------------------------------
-#  POST /users/register → crear nuevo empleado
-# -----------------------------------------------------
-@router.post("/register", response_model=Usuario, status_code=201)
-def registrar_usuario(usuario: UsuarioCreate):
-    nuevo_id = len(usuarios_db) + 1
-    nuevo_usuario = Usuario(id=nuevo_id, **usuario.dict())
-    usuarios_db.append(nuevo_usuario)
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+@router.post("/", response_model=UsuarioRead, status_code=status.HTTP_201_CREATED)
+def crear_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
+    existente = get_user_by_email(db, usuario.correo)
+    if existente:
+        raise HTTPException(status_code=400, detail="Correo ya registrado")
+    nuevo_usuario = create_user(db, usuario)
     return nuevo_usuario
 
-# -----------------------------------------------------
-#  GET /users → listar empleados
-# -----------------------------------------------------
-@router.get("/", response_model=List[Usuario])
-def listar_usuarios():
-    return usuarios_db
 
-# Usuario simulado como "autenticado"
-usuario_actual = Usuario(
-    id=1,
-    nombres="Ana",
-    apellidos="López",
-    email="ana@empresa.com",
-    celular="0999999999",
-    rol="empleado"
-)
 
-@router.get("/me", response_model=Usuario)
-def obtener_mi_perfil():
-    return usuario_actual
-
-# -----------------------------------------------------
-# GET /users/{user_id} → obtener detalles de un empleado
-# -----------------------------------------------------
-@router.get("/{user_id}", response_model=Usuario)
-def obtener_usuario(user_id: int):
-    for usuario in usuarios_db:
-        if usuario.id == user_id:
-            return usuario
-    raise HTTPException(status_code=404, detail="Usuario no encontrado")
-
-# -----------------------------------------------------
-# PUT /users/{user_id} → actualizar información del usuario
-# -----------------------------------------------------
-@router.put("/{user_id}", response_model=Usuario)
-def actualizar_usuario(user_id: int, datos: UsuarioCreate):
-    for i, usuario in enumerate(usuarios_db):
-        if usuario.id == user_id:
-            actualizado = Usuario(id=user_id, **datos.dict())
-            usuarios_db[i] = actualizado
-            return actualizado
-    raise HTTPException(status_code=404, detail="Usuario no encontrado")
+@router.get("/", response_model=list[UsuarioRead])
+def listar_usuarios(db: Session = Depends(get_db)):
+    usuarios = db.query(Usuario).all()  # ✅ consulta directa
+    return usuarios
 
 
 
-@router.post("/set-password")
-def set_password(datos: PasswordCreate):
-    for usuario in usuarios_db:
-        if usuario.id == datos.user_id:
-            usuario.password = datos.password  # Guardar la contraseña
-            return {"message": "Contraseña establecida correctamente"}
-    raise HTTPException(status_code=404, detail="Usuario no encontrado")
+@router.get("/{user_id}", response_model=UsuarioRead)
+def obtener_usuario(user_id: int, db: Session = Depends(get_db)):
+    usuario = get_user(db, user_id)
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    return usuario
 
 
 
+@router.put("/{user_id}", response_model=UsuarioRead)
+def actualizar_usuario(user_id: int, usuario: UsuarioCreate, db: Session = Depends(get_db)):
+    existente = get_user(db, user_id)
+    if not existente:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    actualizado = update_user(
+        db, user_id,
+        nombre=usuario.nombre,
+        correo=usuario.correo
+    )
+    return actualizado
 
+
+
+@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+def eliminar_usuario(user_id: int, db: Session = Depends(get_db)):
+    eliminado = delete_user(db, user_id)
+    if not eliminado:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    return None
+
+
+
+@router.post("/validate", response_model=bool)
+def validate_user(request: UserRequest, db: Session = Depends(get_db)):
+    usuario = get_user_by_email(db, request.email)
+    return usuario is not None
+
+
+@router.post("/user_id", response_model=UserIdResponse)
+def user_id(request: UserRequest, db: Session = Depends(get_db)):
+    usuario = get_user_by_email(db, request.email)
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    return {"user_id": usuario.id}
+
+
+@router.post("/roles", response_model=UserRolesResponse)
+def user_roles(request: UserRequest, db: Session = Depends(get_db)):
+    usuario = get_user_by_email(db, request.email)
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    return {"roles": [usuario.rol.value]}
