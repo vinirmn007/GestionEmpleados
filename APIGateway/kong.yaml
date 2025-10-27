@@ -2,9 +2,9 @@ _format_version: "3.0"
 
 services:
 - name: auth-service
-  url: http://servicio-autenticacion:8000
+  url: http://servicio-autenticacion:9001
 - name: user-service
-  url: http://servicio-usuarios:8000
+  url: http://servicio-usuarios:9000
 
 routes:
 - name: auth-route

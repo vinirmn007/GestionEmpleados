@@ -15,8 +15,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # 6. Exponer el puerto: Le decimos a Docker que el servicio usa el puerto 8000
-EXPOSE 9000
+EXPOSE 9001
 
 # 7. Comando de inicio: Cómo ejecutar tu app. 
 #    Ajusta "main:app" al nombre de tu archivo y variable de FastAPI
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "9000"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "9001"]
