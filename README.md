@@ -71,3 +71,12 @@ Descargar e instalar la versión 3.12.6 desde la página oficial de Python.
 ```sudo mariadb-secure-installation```  
 Verificar la instalacion:  
 ```mariadb -u root -p```  
+
+## Crear Bases de Datos necesarias
+Creamos un usuario llamado: ```fastapi_user``` con contraseña: ```12345```   
+```CREATE USER 'fastapi_user'@'localhost' IDENTIFIED BY '12345';```  
+Creamos la Base de datos para cada microservicio, por ejemplo:
+```CREATE DATABASE servicio_usuarios;```  
+Concedemos permisos:  
+```GRANT ALL PRIVILEGES ON servicio_usuarios.* TO 'fastapi_user'@'localhost';```  
+```FLUSH PRIVILEGES;```  
