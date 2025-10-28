@@ -36,6 +36,9 @@ services:
     container_name: db-sge
     environment:
       MARIADB_ROOT_PASSWORD: "al.22825"
+      MARIADB_DATABASE: servicio_usuarios     
+      MARIADB_USER: fastapi_user             
+      MARIADB_PASSWORD: "12345"
     volumes:
       - db_data:/var/lib/mysql
     networks:
