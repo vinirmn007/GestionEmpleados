@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException, status, Request
 from datetime import timedelta
 from fastapi.middleware.cors import CORSMiddleware
+import httpx
 
 from fastapi.responses import JSONResponse
 from fastapi_jwt_auth import AuthJWT
@@ -36,33 +37,33 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+#Para pruebas: USER_SERVICE_URL = "http://localhost:8000"
+USER_SERVICE_URL = "http://servicio-usuarios:9001"
+
 @app.post("/auth/login", response_model=Token, tags=["Autenticacion"])
-def login(data: LoginRequest, Authorize: AuthJWT = Depends()):
-    #LO SIGUIENTE SE OBTIENE CON EL SERVICIO DE USUARIOS
-    #is_valid_user = validar que exista ese user
-    #user_id = obtener el user id del usuario que hace la peticion
-    #user_roles = obtener rles de usuario de la bd
+async def login(data: LoginRequest, Authorize: AuthJWT = Depends()):
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.post(
+                f"{USER_SERVICE_URL}/usuarios/validate",
+                json={"email": data.email, "password": data.password}
+            )
 
-    #SIMULACIONNNNNNNNNN:
-    is_valid_user = False
-    user_id = 1
-    user_roles = ["user", "admin"]
-
-    x = data.email
-    print(x)
-
-    if not is_valid_user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Email o contraseña incorrectos"
-        )
+            if response.status_code in (401, 404):
+                raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos")
+                        
+            response.raise_for_status()
+        except httpx.RequestError as exc:
+            raise HTTPException(status_code=503, detail=f"Servicio de usuarios invalido: {exc}")
+        
+    user_data = response.json()
     
     claims = {
-        "roles": user_roles
+        "roles": user_data["rol"]
     }
     
     access_token = Authorize.create_access_token(
-        subject=user_id,
+        subject=user_data["id"],
         user_claims=claims,
         expires_time=timedelta(hours=1)
     )

@@ -9,14 +9,14 @@ from crud.usuarioCrud import (
     get_user_by_email,
     create_user,
     update_user,
-    delete_user
+    delete_user,
+    verify_user_password
 )
 
 router = APIRouter(
     prefix="/usuarios",
     tags=["Usuarios"]
 )
-
 
 def get_db():
     db = SessionLocal()
@@ -33,8 +33,6 @@ def crear_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Correo ya registrado")
     nuevo_usuario = create_user(db, usuario)
     return nuevo_usuario
-
-
 
 @router.get("/", response_model=list[UsuarioRead])
 def listar_usuarios(db: Session = Depends(get_db)):
@@ -73,12 +71,18 @@ def eliminar_usuario(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     return None
 
-
-
-@router.post("/validate", response_model=bool)
+@router.post("/validate", response_model=UsuarioRead)
 def validate_user(request: UserRequest, db: Session = Depends(get_db)):
     usuario = get_user_by_email(db, request.email)
-    return usuario is not None
+
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    
+    is_valid = verify_user_password(db, request.email, request.password)
+    if not is_valid:
+        raise HTTPException(status_code=401, detail="Credenciales inválidas")
+    
+    return usuario
 
 
 @router.post("/user_id", response_model=UserIdResponse)

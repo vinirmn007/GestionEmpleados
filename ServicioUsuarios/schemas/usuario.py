@@ -23,6 +23,7 @@ class UsuarioRead(UsuarioBase):
 
 class UserRequest(BaseModel):
     email: str
+    password: str
 
 class UserRolesResponse(BaseModel):
     roles: list[str]
