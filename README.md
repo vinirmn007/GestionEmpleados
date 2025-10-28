@@ -73,10 +73,18 @@ Verificar la instalacion:
 ```mariadb -u root -p```  
 
 ## Crear Bases de Datos necesarias
-Creamos un usuario llamado: ```fastapi_user``` con contraseña: ```12345```   
+1. Creamos un usuario llamado: ```fastapi_user``` con contraseña: ```12345```   
 ```CREATE USER 'fastapi_user'@'localhost' IDENTIFIED BY '12345';```  
-Creamos la Base de datos para cada microservicio, por ejemplo:
+2. Creamos la Base de datos para cada microservicio, por ejemplo:  
 ```CREATE DATABASE servicio_usuarios;```  
-Concedemos permisos:  
+3. Concedemos permisos:  
 ```GRANT ALL PRIVILEGES ON servicio_usuarios.* TO 'fastapi_user'@'localhost';```  
 ```FLUSH PRIVILEGES;```  
+## Levatamiento del proyecto con docker
+1. Instalar Docker Desktop  
+2. Instalar docker-compose  
+```sudo apt-get install docker-compose-plugin```  
+3. Levantar contenedores  
+```docker-compose up --build```  
+4. Cerrar contenedor  
+```docker-compose down```
