@@ -1,10 +1,16 @@
 from sqlalchemy.orm import Session
 from models.usuario_model import Usuario
 from schemas.usuario import UsuarioCreate
-from utils.security import hash_password 
+from utils.security import hash_password, verify_password
 
 def get_user_by_email(db: Session, correo: str):
     return db.query(Usuario).filter(Usuario.correo == correo).first()
+
+def verify_user_password(db: Session, correo: str, password: str):
+    user = get_user_by_email(db, correo)
+    if not user:
+        return False
+    return verify_password(password, user.hashed_password)
 
 def get_user(db: Session, user_id: int):
     return db.query(Usuario).filter(Usuario.id == user_id).first()
