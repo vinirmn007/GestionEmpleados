@@ -16,6 +16,6 @@ routes:
 - name: user-route
   service: user-service
   paths:
-  - /users
+  - /usuarios
   strip_path: false
 
