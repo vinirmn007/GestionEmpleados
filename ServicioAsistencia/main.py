@@ -1,105 +1,82 @@
-from fastapi import FastAPI, Depends, HTTPException, status, Request
+from fastapi import FastAPI, Depends, HTTPException, Request, Header
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import Annotated, List
-from datetime import datetime, date
+from datetime import datetime, date, timezone, timedelta
+import jwt
 
-from fastapi_jwt_auth3 import AuthJWT
-from fastapi_jwt_auth3.exceptions import AuthJWTException
+from verification.verify_roles import require_role
 
-from .models import schemas
-from . import models, crud
+from .schemas import mark_schema
+from .models import mark_model
 from .database import engine, get_db
-from .config import settings
+from .crud import mark_crud as crud
 
-# --- Creación de la App y Tablas ---
-models.Base.metadata.create_all(bind=engine)
 app = FastAPI(title="Servicio de Asistencia")
 
-# --- CORS ---
+#CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Cambia esto en producción
+    allow_origins=["*"],  # Ajustar en producción
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# --- Configuración de JWT (Debe ser idéntica a la de auth) ---
-@AuthJWT.load_config
-def get_config():
-    return settings
-
-@app.exception_handler(AuthJWTException)
-def authjwt_exception_handler(request: Request, exc: AuthJWTException):
-    return JSONResponse(status_code=exc.status_code, content={"detail": exc.message})
-
-# --- Dependencia de Roles ---
-def require_role(role: str):
-    def check_role(Auth: AuthJWT = Depends()):
-        Auth.jwt_required()
-        claims = Auth.get_jwt()
-        user_roles = claims.get("roles", [])
-        if role not in user_roles:
-            raise HTTPException(status_code=403, detail=f"Se requiere rol '{role}'")
-        return Auth
-    return check_role
-
+# Dependencias de rol
 is_employee = Depends(require_role("Empleado"))
 is_manager = Depends(require_role("Gerente"))
 
-# --- Endpoints ---
-
-@app.post(
-    "/attendance/mark", 
-    response_model=schemas.MarkStatusResponse,
-    tags=["Asistencia (Empleado)"]
-)
+@app.post("/attendance/mark", response_model=mark_schema.MarkStatusResponse, tags=["Asistencia (Empleado)"])
 async def create_new_mark(
     db: Annotated[Session, Depends(get_db)],
-    Auth: Annotated[AuthJWT, is_employee]
+    payload: Annotated[dict, is_employee]
 ):
     """
     Registra una marcación (timestamp) simple.
     Determina el estado (Adentro/Afuera) contando las marcas del día.
     """
-    user_id = Auth.get_jwt_subject()
-    timestamp = datetime.utcnow()
-    
+    user_id = payload.get("sub")
+    timestamp = datetime.now(timezone.utc)
+
     # 1. Guardar la nueva marca
     new_mark = crud.create_mark(db, user_id, timestamp)
-    
+
     # 2. Contar las marcas de hoy (incluida la nueva)
     marks_today = crud.get_marks_for_day(db, user_id, timestamp.date())
     mark_count = len(marks_today)
-    
+
     # 3. Determinar el estado
-    # Si el número de marcas es impar (1, 3), está "Adentro".
-    # Si es par (2, 4), está "Afuera".
     current_status = "Adentro" if mark_count % 2 != 0 else "Afuera"
-            
-    return schemas.MarkStatusResponse(
+
+    return mark_schema.MarkStatusResponse(
         new_mark=new_mark,
         current_status=current_status,
         todays_marks=mark_count
     )
 
+
 @app.get(
-    "/attendance/history", 
-    response_model=List[schemas.MarkResponse],
+    "/attendance/history",
+    response_model=List[mark_schema.MarkResponse],
     tags=["Asistencia (Reportes)"]
 )
 async def get_attendance_history(
-    user_id: str, # El ID del usuario a consultar
-    target_date: date, # La fecha (ej. 2025-11-05)
+    user_id: str,
+    target_date: date,
     db: Annotated[Session, Depends(get_db)],
-    Auth: Annotated[AuthJWT, is_manager] # Protegido para Gerentes/Servicios
+    payload: Annotated[dict, is_manager]
 ):
     """
     Endpoint para que el Servicio de Reportes obtenga los datos crudos
     de un usuario en un día específico.
     """
-    # Aquí faltaría validar que el Gerente pueda ver a ese user_id
+    # (opcional) validar que el gerente tenga permisos sobre ese usuario
     marks = crud.get_marks_for_day(db, user_id, target_date)
     return marks
+
+
+@app.get("/attendance/ping")
+def ping():
+    return {"mensaje": "Servicio de Asistencia operativo ✅"}
