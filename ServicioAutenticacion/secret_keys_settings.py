@@ -1,4 +1,4 @@
-from pydantic.v1 import BaseSettings
+from pydantic import BaseSettings
 
 class Settings(BaseSettings):
     AUTHJWT_SECRET_KEY: str
