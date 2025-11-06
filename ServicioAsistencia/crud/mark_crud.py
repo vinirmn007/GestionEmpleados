@@ -2,8 +2,7 @@ from sqlalchemy.orm import Session
 from models import mark_model
 from datetime import datetime, time, date
 
-def create_mark(db: Session, user_id: str, timestamp: datetime) -> mark_model.Mark:
-    """Guarda la nueva marcación (timestamp) en la BD."""
+def create_mark(db, user_id: str, timestamp: datetime) -> mark_model.Mark:
     db_mark = mark_model.Mark(
         user_id=user_id,
         timestamp=timestamp
@@ -14,10 +13,6 @@ def create_mark(db: Session, user_id: str, timestamp: datetime) -> mark_model.Ma
     return db_mark
 
 def get_marks_for_day(db: Session, user_id: str, target_date: date) -> list[mark_model.Mark]:
-    """
-    Obtiene todas las marcaciones de un usuario para un día específico,
-    ordenadas cronológicamente.
-    """
     start_of_day = datetime.combine(target_date, time.min)
     end_of_day = datetime.combine(target_date, time.max)
 
