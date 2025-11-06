@@ -8,10 +8,6 @@ ALGORITHM = "HS256"
 
 
 def decode_jwt(token: str):
-    """
-    Decodifica y valida un token JWT.
-    Retorna los datos del payload si es válido.
-    """
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
@@ -22,9 +18,6 @@ def decode_jwt(token: str):
 
 
 async def get_current_user(authorization: str = Header(...)):
-    """
-    Extrae y valida el token del encabezado Authorization.
-    """
     if not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Encabezado Authorization inválido")
 
@@ -34,9 +27,6 @@ async def get_current_user(authorization: str = Header(...)):
 
 
 def require_role(role: str):
-    """
-    Dependencia para validar roles dentro del JWT.
-    """
     async def role_dependency(payload: dict = Depends(get_current_user)):
         user_roles = payload.get("roles", [])
         if role not in user_roles:

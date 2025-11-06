@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
 class MarkResponse(BaseModel):
@@ -6,8 +6,7 @@ class MarkResponse(BaseModel):
     user_id: str
     timestamp: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class MarkStatusResponse(BaseModel):
     new_mark: MarkResponse
