@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  #--- API GATEWAY KONG ---
+  #API HATEWAY KONG
   kong-gateway:
     image: kong:latest
     container_name: kong-gateway
@@ -31,8 +31,7 @@ services:
         condition: service_healthy
       servicio-usuarios:
         condition: service_healthy
-    # --- ¡AÑADIDO! ---
-    # Le damos a Kong su propio healthcheck paciente
+
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8002/status"]
       interval: 5s
@@ -40,14 +39,13 @@ services:
       retries: 10
       start_period: 10s
 
-  #--- BASE DE DATOS ---
+  #DB
   db-sge:
     image: mariadb:latest
     container_name: db-sge
     environment:
       MARIADB_ROOT_PASSWORD: "al.22825"
-      # --- ¡AÑADIDO! ---
-      # Esto crea la base de datos y el usuario que tu app necesita
+
       MARIADB_DATABASE: "servicio_usuarios"
       MARIADB_USER: "fastapi_user"
       MARIADB_PASSWORD: "12345"
@@ -56,19 +54,18 @@ services:
     networks:
       - sge-network
     healthcheck:
-      # --- ¡CORREGIDO! ---
-      # Cambiamos a CMD-SHELL y usamos $$ para la sustitución de variables DENTRO del contenedor
+
       test: ["CMD-SHELL", "mariadb-admin ping -h localhost -u root -p\"$$MARIADB_ROOT_PASSWORD\""]
       interval: 5s
       timeout: 5s
       retries: 10
-      # Da a la BD 20 segundos para arrancar antes de que los fallos cuenten.
+
       start_period: 20s
 
-  #--- MICROSERVICIOS ---
+  #MICROSERVICIOS
   servicio-autenticacion:
     build:
-      context: ./ServicioAutenticacion
+      context: ./backend/ServicioAutenticacion
     container_name: servicio-autenticacion
     networks:
       - sge-network
@@ -81,15 +78,15 @@ services:
 
   servicio-usuarios:
     build:
-      context: ./ServicioUsuarios
+      context: ./backend/ServicioUsuarios
     container_name: servicio-usuarios
     depends_on:
       db-sge:
         condition: service_healthy
     environment:
-      # --- ¡ACTUALIZADO! ---
-      # Estas son las variables que tu código Python leerá
-      DB_HOST: "db-sge" # <-- ¡LA CLAVE! Usa el nombre del servicio, no localhost
+
+
+      DB_HOST: "db-sge"
       DB_USER: "fastapi_user"
       DB_PASSWORD: "12345"
       DB_NAME: "servicio_usuarios"
