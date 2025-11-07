@@ -34,7 +34,7 @@ La comunicación externa es manejada por un **API Gateway (Kong)**, que actúa c
 
 ## Guía de Instalación Local
 
-El proyecto está 100% contenerizado, por lo que no necesitas instalar Python o MariaDB localmente.
+El proyecto está 100% contenerizado, por lo que no es necesario instalar Python o MariaDB localmente.
 
 ### Prerrequisitos
 
@@ -45,8 +45,8 @@ El proyecto está 100% contenerizado, por lo que no necesitas instalar Python o 
 
 1.  **Clonar el repositorio:**
     ```bash
-    git clone [https://tu-repositorio-git.com/proyecto.git](https://tu-repositorio-git.com/proyecto.git)
-    cd proyecto
+    git clone [https://github.com/vinirmn007/GestionEmpleados.git](https://github.com/vinirmn007/GestionEmpleados.git)
+    cd GestionEmpleados
     ```
 
 2.  **Configurar Variables de Entorno:**
@@ -55,12 +55,12 @@ El proyecto está 100% contenerizado, por lo que no necesitas instalar Python o 
     **Ejemplo (`servicio-autenticacion/.env`):**
     ```ini
     # Clave secreta para firmar los JWT. DEBE SER LA MISMA EN TODOS LOS SERVICIOS.
-    AUTHJWT_SECRET_KEY="una-clave-muy-larga-y-segura-generada-aleatoriamente"
+    AUTHJWT_SECRET_KEY="alexisjosue12345"
 
     # Credenciales de la BD (leídas de docker-compose)
     DB_HOST="db-sge"
     DB_USER="root"
-    DB_PASSWORD="tu-password-secreto" 
+    DB_PASSWORD="al.22825" 
     ```
     *Copia este archivo `.env` en cada carpeta de microservicio.*
 
@@ -72,7 +72,7 @@ El proyecto está 100% contenerizado, por lo que no necesitas instalar Python o 
     services:
       db-sge:
         environment:
-          MARIADB_ROOT_PASSWORD: "tu-password-secreto" # <-- Esta contraseña
+          MARIADB_ROOT_PASSWORD: "al.22825" # <-- Esta contraseña
     ```
 
 4.  **Construir e Iniciar los Contenedores:**
@@ -98,6 +98,7 @@ Todas las peticiones deben dirigirse al API Gateway (`http://localhost`). Kong s
 
 * **`POST /auth/login`**:
     Inicia sesión con `email` y `password`. Devuelve un `access_token` (corta duración) y un `refresh_token` (larga duración).
+**LO SIGUIENTE SE IMPLEMENTARA A FUTURO**
 * **`POST /auth/refresh`**:
     Requiere un `refresh_token` válido. Devuelve un nuevo `access_token` y el mismo `refresh_token`.
 * **`POST /auth/logout`**:
