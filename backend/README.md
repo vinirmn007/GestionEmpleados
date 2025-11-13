@@ -72,7 +72,7 @@ El proyecto está 100% contenerizado, por lo que no es necesario instalar Python
     services:
       db-sge:
         environment:
-          MARIADB_ROOT_PASSWORD: "al.22825" # <-- Esta contraseña
+          MARIADB_ROOT_PASSWORD: "example" # <-- Esta contraseña
     ```
 
 4.  **Construir e Iniciar los Contenedores:**
