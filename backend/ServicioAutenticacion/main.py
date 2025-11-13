@@ -8,17 +8,16 @@ from controller import create_access_token
 
 app = FastAPI(title="Servicio Autenticacion", version="1.0.0")
 
-# --- Configurar CORS ---
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # ajusta según necesidad
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-USER_SERVICE_URL = "http://servicio-usuarios:9001"
-#USER_SERVICE_URL = "http://127.0.0.1:9001"
+#USER_SERVICE_URL = "http://servicio-usuarios:9001"
+USER_SERVICE_URL = "http://127.0.0.1:9001"
 
 @app.get("/auth")
 def read_root():
