@@ -55,12 +55,12 @@ El proyecto está 100% contenerizado, por lo que no es necesario instalar Python
     **Ejemplo (`servicio-autenticacion/.env`):**
     ```ini
     # Clave secreta para firmar los JWT. DEBE SER LA MISMA EN TODOS LOS SERVICIOS.
-    AUTHJWT_SECRET_KEY="alexisjosue12345"
+    AUTHJWT_SECRET_KEY="examplekey"
 
     # Credenciales de la BD (leídas de docker-compose)
-    DB_HOST="db-sge"
-    DB_USER="root"
-    DB_PASSWORD="al.22825" 
+    DB_HOST="example"
+    DB_USER="example_user"
+    DB_PASSWORD="examplepassword" 
     ```
     *Copia este archivo `.env` en cada carpeta de microservicio.*
 
