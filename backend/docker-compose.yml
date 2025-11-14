@@ -16,9 +16,7 @@ services:
       KONG_STATUS_LISTEN: "0.0.0.0:8002"
 
     ports:
-      # 80:8000 -> Mapea el puerto 80 (público) al puerto proxy (8000)
       - "80:8000" 
-      # 8001:8001 -> Mapea el puerto 8001 (Admin) para que lo uses tú
       - "8001:8001" 
 
     volumes:
