@@ -5,6 +5,10 @@ services:
   url: http://servicio-autenticacion:9000
 - name: user-service
   url: http://servicio-usuarios:9001
+- name: assist-service
+  url: http://servicio-autenticacion:9002
+- name: schedules-service
+  url: http://servicio-usuarios:9003
 
 routes:
 - name: auth-route
@@ -15,6 +19,18 @@ routes:
 
 - name: user-route
   service: user-service
+  paths:
+  - /usuarios
+  strip_path: false
+  
+- name: assist-route
+  service: assist-service
+  paths:
+  - /usuarios
+  strip_path: false
+  
+- name: schedules-route
+  service: schedules-service
   paths:
   - /usuarios
   strip_path: false
