@@ -47,3 +47,9 @@ def delete_user(db: Session, user_id: int):
     db.delete(u)
     db.commit()
     return u
+
+def get_usuarios_paginated(db: Session, skip: int = 0, limit: int = 10):
+    query = db.query(Usuario)
+    total = query.count()
+    usuarios = query.offset(skip).limit(limit).all()
+    return total, usuarios

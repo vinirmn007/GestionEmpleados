@@ -1,3 +1,4 @@
+from typing import List
 from pydantic import BaseModel, EmailStr
 from enum import Enum
 
@@ -30,3 +31,10 @@ class UserRolesResponse(BaseModel):
 
 class UserIdResponse(BaseModel):
     user_id: int
+
+class PaginatedUsuarios(BaseModel):
+    total: int      
+    skip: int       
+    limit: int      
+    data: List[UsuarioRead] 
+    

@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from typing import List
 from database import SessionLocal
-from schemas.usuario import UserRequest, UsuarioCreate, UsuarioRead, UserRolesResponse, UserIdResponse
+from schemas.usuario import UserRequest, UsuarioCreate, UsuarioRead, UserRolesResponse, UserIdResponse , PaginatedUsuarios
 from models.usuario_model import Usuario
 from crud.usuarioCrud import (
     get_user,
@@ -10,7 +10,8 @@ from crud.usuarioCrud import (
     create_user,
     update_user,
     delete_user,
-    verify_user_password
+    verify_user_password,
+    get_usuarios_paginated
 )
 
 router = APIRouter(
@@ -36,9 +37,22 @@ def crear_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
 
 @router.get("/", response_model=list[UsuarioRead])
 def listar_usuarios(db: Session = Depends(get_db)):
-    usuarios = db.query(Usuario).all()  # ✅ consulta directa
+    usuarios = db.query(Usuario).all()  
     return usuarios
 
+@router.get("/list", response_model=PaginatedUsuarios)
+def listar_usuarios(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(10, ge=1, le=100),
+    db: Session = Depends(get_db)
+    ):
+    total, usuarios = get_usuarios_paginated(db, skip, limit)
+    return {
+        "total": total,
+        "skip": skip,
+        "limit": limit,
+        "data": usuarios
+    }
 
 
 @router.get("/{user_id}", response_model=UsuarioRead)
