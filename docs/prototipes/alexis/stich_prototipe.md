@@ -14,7 +14,7 @@ Este documento describe el flujo de usuario, la estructura de navegación y el d
 * **Botón de Acción:** "Acceder" (Redirige al Dashboard).
 * **Recuperación:** Enlace "¿Olvidaste tu contraseña?".
 
-![Inicio de Sesión](/docs/prototypes/alexis/light/inicioSesion.jpg)
+![Inicio de Sesión](/light/inicioSesion.jpg)
 
 ---
 
