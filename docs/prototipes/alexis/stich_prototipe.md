@@ -1,6 +1,5 @@
-# HR SYSTEM PRO - MAPA DE NAVEGACIÓN Y DOCUMENTACIÓN UI
+# HR SYSTEM - MAPA DE NAVEGACIÓN Y DOCUMENTACIÓN UI
 
-Este documento describe el flujo de usuario, la estructura de navegación y el detalle de las interfaces de usuario (UI) implementadas en el sistema HR System Pro.
 
 ---
 
