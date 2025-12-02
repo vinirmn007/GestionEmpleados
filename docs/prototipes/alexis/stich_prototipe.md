@@ -14,7 +14,7 @@ Este documento describe el flujo de usuario, la estructura de navegación y el d
 * **Botón de Acción:** "Acceder" (Redirige al Dashboard).
 * **Recuperación:** Enlace "¿Olvidaste tu contraseña?".
 
-![Inicio de Sesión](/light/inicioSesion.png)
+![Inicio de Sesión](/docs/prototipes/alexis/light/inicioSesion.png)
 
 ---
 
@@ -29,7 +29,7 @@ Este documento describe el flujo de usuario, la estructura de navegación y el d
 * **Tabla de Datos:** Muestra foto, nombre, ID, departamento, puesto y estado (Activo/Inactivo).
 * **Botón Primario:** "Añadir Nuevo Empleado" (Navega al formulario de registro).
 
-![Dashboard de Empleados](/light/dashboardEmpleados.png)
+![Dashboard de Empleados](/docs/prototipes/alexis/light/dashboardEmpleados.png)
 
 ### Registro de Nuevo Empleado
 **Propósito:** Formulario para dar de alta a un nuevo colaborador en el sistema.
@@ -39,7 +39,7 @@ Este documento describe el flujo de usuario, la estructura de navegación y el d
 * **Selector:** Posición / Cargo.
 * **Botón de Acción:** "Registrar Empleado" (Guarda los datos).
 
-![Registro de Empleados](/light/registroEmpleados.png)
+![Registro de Empleados](/docs/prototipes/alexis/light/registroEmpleados.png)
 
 ---
 
@@ -54,7 +54,7 @@ Este documento describe el flujo de usuario, la estructura de navegación y el d
 * **Botón Primario:** "Generar Nuevo Rol de Pago".
 * **Acciones de Fila:** Ver detalles, descargar o eliminar.
 
-![Gestión de Roles](/light/creacionRoles.png)
+![Gestión de Roles](/docs/prototipes/alexis/light/creacionRoles.png)
 
 ### Creación de Rol de Pago (Paso 1)
 **Propósito:** Iniciar el proceso de cálculo de nómina seleccionando el período temporal específico.
@@ -63,7 +63,7 @@ Este documento describe el flujo de usuario, la estructura de navegación y el d
 * **Selector de Fecha:** Input tipo calendario para elegir Mes/Año.
 * **Botón de Acción:** "Generar Roles de Pago" (Procesa los cálculos y lleva al detalle).
 
-![Creación de Rol](/light/creacionRol.png)
+![Creación de Rol](/docs/prototipes/alexis/light/creacionRol.png)
 
 ### Detalle de Roles de Pago (Paso 2)
 **Propósito:** Revisar los montos calculados (ingresos y deducciones) por empleado antes de finalizar el proceso.
@@ -74,7 +74,7 @@ Este documento describe el flujo de usuario, la estructura de navegación y el d
 * **Indicadores de Estado:** Etiquetas (Pendiente, Pagado, Error).
 * **Botón Final:** "Enviar al Gestor de Pagos".
 
-![Detalle de Roles](/light/detalleRoles.png)
+![Detalle de Roles](/docs/prototipes/alexis/light/detalleRoles.png)
 
 ### Configuración de Nómina
 **Propósito:** Definir las variables globales monetarias que afectan el cálculo de los sueldos.
@@ -84,7 +84,7 @@ Este documento describe el flujo de usuario, la estructura de navegación y el d
 * **Inputs Numéricos (Otros):** Multa por atraso (minuto), Deducción por ausencia, Bonificaciones.
 * **Botonera:** Cancelar / Guardar Cambios.
 
-![Editar Nómina](/light/editarNomina.png)
+![Editar Nómina](/docs/prototipes/alexis/light/editarNomina.png)
 
 ---
 
@@ -99,7 +99,7 @@ Este documento describe el flujo de usuario, la estructura de navegación y el d
 * **Alertas:** Etiquetas de estado (Completo, Incompleto, Editado).
 * **Acciones:** Icono de chat/edición para justificaciones.
 
-![Editar Marcaciones](/light/editarMarcaciones.png)
+![Editar Marcaciones](/docs/prototipes/alexis/light/editarMarcaciones.png)
 
 ---
 
@@ -115,7 +115,7 @@ Este documento describe el flujo de usuario, la estructura de navegación y el d
 * **Botón Primario:** "Añadir Turno".
 * **Barra de Acción Flotante:** Descartar / Guardar Horario.
 
-![Gestión de Horarios](/light/gestionHorarios.png)
+![Gestión de Horarios](/docs/prototipes/alexis/light/gestionHorarios.png)
 
 ---
 
@@ -130,7 +130,7 @@ Este documento describe el flujo de usuario, la estructura de navegación y el d
 * **Área de Decisión:** Caja de texto para "Motivo de la Decisión" (opcional).
 * **Botones de Acción:** "Aprobar" (Verde) y "Denegar" (Rojo).
 
-![Gestión de Permisos](/light/gestionPermisos.png)
+![Gestión de Permisos](/docs/prototipes/alexis/light/gestionPermisos.png)
 
 ---
 
