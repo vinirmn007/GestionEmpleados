@@ -1,105 +1,98 @@
 Descripción general del flujo
 
-El prototipo representa el flujo principal de un sistema de Gestión de Empleados. Las pantallas permiten iniciar sesión, ver el panel general, administrar empleados (listar, registrar, editar y ver detalles), confirmar acciones realizadas y consultar el perfil del usuario. En conjunto, cubren el proceso completo de administración del personal dentro del sistema.
+El prototipo representa el flujo principal de un sistema de Gestión de Empleados. Las pantallas permiten iniciar sesión, acceder al panel principal, administrar empleados (listar, registrar, editar y consultar detalles), confirmar acciones realizadas y visualizar el perfil del usuario.
+En conjunto, cubren el proceso completo de administración de personal dentro del sistema.
 
 1. Iniciar Sesión
 
 Ruta: iniciar_sesión/screen.png
-Propósito: Permitir al usuario autenticarse antes de acceder al sistema.
+Propósito: Permitir que el usuario se autentique antes de acceder al sistema.
 Componentes principales:
 
-Formulario (correo y contraseña)
+Formulario con correo y contraseña
 
-Botón “Iniciar sesión”
+Botón Iniciar sesión
 
-Enlace “¿Olvidaste tu contraseña?”
-Captura: iniciar_sesión/screen.png
+Enlace ¿Olvidaste tu contraseña?
 
 2. Panel Principal
 
 Ruta: panel_principal/screen.png
-Propósito: Proveer una vista general con accesos rápidos, estadísticas o navegación principal del sistema.
+Propósito: Mostrar una vista general del sistema y ofrecer accesos rápidos a las funciones principales.
 Componentes principales:
 
 Barra de navegación superior
 
-Módulos / tarjetas resumen
+Tarjetas o módulos informativos
 
-Secciones de acceso directo
-Captura: panel_principal/screen.png
+Enlaces directos a secciones clave
 
 3. Listar Empleados
 
 Ruta: listar_empleados/screen.png
-Propósito: Mostrar todos los empleados registrados y permitir acciones de gestión.
+Propósito: Visualizar todos los empleados registrados y acceder a funciones de gestión.
 Componentes principales:
 
-Tabla con datos de empleados
+Tabla de empleados
 
 Barra de búsqueda
 
-Botón “Agregar empleado”
+Botón Agregar empleado
 
-Acciones por fila (ver, editar, eliminar)
-Captura: listar_empleados/screen.png
+Acciones por cada empleado (ver, editar, eliminar)
 
 4. Registrar Empleado
 
 Ruta: registrar_empleado/screen.png
-Propósito: Permitir la creación de un nuevo empleado en el sistema.
+Propósito: Crear un nuevo empleado ingresando sus datos personales y laborales.
 Componentes principales:
 
 Formulario completo de registro
 
-Botón “Registrar”
-Captura: registrar_empleado/screen.png
+Botón Registrar
 
 5. Editar Empleado
 
 Ruta: editar_empleado/screen.png
-Propósito: Modificar la información de un empleado existente.
+Propósito: Permitir la modificación de la información existente de un empleado.
 Componentes principales:
 
 Formulario editable
 
-Botón “Actualizar”
+Botón Actualizar
 
-Botón “Cancelar”
-Captura: editar_empleado/screen.png
+Botón Cancelar
 
 6. Detalle del Empleado
 
 Ruta: detalle_del_empleado/screen.png
-Propósito: Mostrar toda la información de un empleado seleccionado.
+Propósito: Mostrar la información completa de un empleado específico.
 Componentes principales:
 
 Datos personales y laborales
 
-Acciones rápidas (editar, regresar)
-Captura: detalle_del_empleado/screen.png
+Acciones adicionales (editar, regresar)
 
 7. Confirmación de Acción
 
 Ruta: confirmación_de_acción/screen.png
-Propósito: Informar al usuario que una acción se completó exitosamente (registro, actualización, etc.).
+Propósito: Informar visualmente al usuario que una acción se realizó con éxito.
 Componentes principales:
 
-Icono de éxito
+Icono de confirmación
 
-Resumen de la acción
+Resumen breve de la acción realizada
 
-Botón para volver al listado
-Captura: confirmación_de_acción/screen.png
+Botón Volver al listado
 
 8. Perfil del Usuario
 
 Ruta: perfil_del_usuario/screen.png
-Propósito: Permitir al usuario ver su información personal y acceder a configuraciones.
+Propósito: Mostrar la información personal del usuario actual y permitir ajustes básicos.
 Componentes principales:
 
 Foto de perfil
 
-Datos del usuario (correo, rol, fecha de ingreso)
+Correo, rol y fecha de ingreso
 
-Botones: “Editar perfil” y “Cerrar sesión”
-Captura: perfil_del_usuario/screen.png
+Botones Editar perfil y Cerrar sesión
