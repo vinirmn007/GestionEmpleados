@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Perfil del Usuario</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922"
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px"
+                    }
+                }
+            }
+        };
+    </script>
+
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body class="font-display bg-background-light dark:bg-background-dark">
+
+<!-- Layout Wrapper -->
+<div class="flex min-h-screen flex-col">
+
+    <!-- Navbar -->
+    <header class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-10 py-3 bg-white dark:bg-[#182431]">
+        <div class="flex items-center gap-4 text-slate-800 dark:text-slate-200">
+            <div class="size-6 text-primary">
+                <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path>
+                </svg>
+            </div>
+            <h2 class="text-lg font-bold tracking-[-0.015em]">Gestión de Empleados</h2>
+        </div>
+
+        <div class="flex items-center gap-6">
+            <nav class="hidden md:flex items-center gap-6">
+                <a href="#" class="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary">Dashboard</a>
+                <a href="#" class="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary">Empleados</a>
+                <a href="#" class="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary">Reportes</a>
+            </nav>
+
+            <div class="flex items-center gap-2">
+                <button class="h-9 w-9 rounded-full flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+
+                <button class="h-9 w-9 rounded-full flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700">
+                    <span class="material-symbols-outlined">settings</span>
+                </button>
+
+                <div class="size-10 rounded-full bg-cover bg-center" style='background-image:url("https://lh3.googleusercontent.com/aida-public/AB6AXuDVbGuGwoPlbl5r7vZlh47T19JNWhF2NyUG_ySglQ-0DzHaYebExQsnUKTEBDD54JdJxk1vv2RXMkicM4hxYbUrqjs6Q1E6p6_HH5BJfPXDt0eLpPgE1AGtZlHQAoDFir30wGNcTrzxT2fYIZq-hqEjM5pUBYLxwfXNXSEAWAL9AayUAIDrXWGIzV1VHh4xyaMJzMhoeKBSYV7M3T7YqHLGNm8UrLOsfH5WV8pYQvjXzVI2SzFrYAGofXLsySK7-rq7agELWJrG5Ao");'></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex flex-1 justify-center py-10 px-4">
+        <div class="w-full max-w-2xl">
+
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-50 mb-6">
+                Perfil del Usuario
+            </h1>
+
+            <div class="bg-white dark:bg-[#182431] border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden">
+
+                <!-- Profile Header -->
+                <div class="p-8 border-b border-slate-200 dark:border-slate-800 flex flex-col items-center gap-4">
+                    <div class="w-28 h-28 rounded-full bg-cover bg-center" style='background-image:url("https://lh3.googleusercontent.com/aida-public/AB6AXuAG-6Ej7WtJwhaI0475qfSr2cYQimBR2udMF-_nq2L_RzJWnMxnUOZa7muuS5uD6NqVKmZ3pAHtaJq81rxUwfQTMOE1aE9cay0Zhb1JJdIjz46Kyh8gYnF-1OxHfizuNthgyvkXccqQsfd_fbFv4KnODUzFOu6NKMAzxwqea3AYo_NXC1wTFyXUwb0nqg_7xsRXBbAq940FL8BCuvtE78RnGDiTsGydaVlpcCbcACgncUzghxYOyRCci6f0LIfMGolb2Kbz--CFUNk");'></div>
+
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-slate-900 dark:text-slate-50">Alejandro García</p>
+                        <p class="text-slate-500 dark:text-slate-400">Administrador</p>
+                    </div>
+                </div>
+
+                <!-- User Info List -->
+                <div class="p-8 space-y-2">
+
+                    <!-- Email -->
+                    <div class="flex justify-between items-center min-h-14 px-4">
+                        <div class="flex items-center gap-4">
+                            <div class="size-10 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-500 dark:text-slate-400">
+                                <span class="material-symbols-outlined">mail</span>
+                            </div>
+                            <p class="text-sm font-medium text-slate-600 dark:text-slate-300">Correo electrónico</p>
+                        </div>
+                        <p class="text-sm font-medium text-slate-900 dark:text-slate-100">alejandro.garcia@empresa.com</p>
+                    </div>
+
+                    <!-- Rol -->
+                    <div class="flex justify-between items-center min-h-14 px-4">
+                        <div class="flex items-center gap-4">
+                            <div class="size-10 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-500 dark:text-slate-400">
+                                <span class="material-symbols-outlined">badge</span>
+                            </div>
+                            <p class="text-sm font-medium text-slate-600 dark:text-slate-300">Rol</p>
+                        </div>
+                        <p class="text-sm font-medium text-slate-900 dark:text-slate-100">Administrador</p>
+                    </div>
+
+                    <!-- Fecha -->
+                    <div class="flex justify-between items-center min-h-14 px-4">
+                        <div class="flex items-center gap-4">
+                            <div class="size-10 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-500 dark:text-slate-400">
+                                <span class="material-symbols-outlined">calendar_today</span>
+                            </div>
+                            <p class="text-sm font-medium text-slate-600 dark:text-slate-300">Miembro desde</p>
+                        </div>
+                        <p class="text-sm font-medium text-slate-900 dark:text-slate-100">25 de Octubre, 2023</p>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="p-8 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center gap-4">
+                    <button class="w-full sm:w-auto h-10 px-5 bg-primary text-white rounded-lg flex items-center gap-2 text-sm font-bold hover:bg-primary/90 transition">
+                        <span class="material-symbols-outlined">edit</span>
+                        Editar perfil
+                    </button>
+
+                    <button class="w-full sm:w-auto h-10 px-5 bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-50 rounded-lg flex items-center gap-2 text-sm font-bold hover:bg-slate-300 dark:hover:bg-slate-600 transition">
+                        <span class="material-symbols-outlined">logout</span>
+                        Cerrar sesión
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+</div>
+</body>
+</html>
