@@ -1,17 +1,10 @@
-# servicio-reportes/logic.py
 import pandas as pd
 from datetime import timedelta
 
 def calculate_monthly_payroll(
     attendance_data: list, 
     job_rules: dict
-) -> dict:
-    """
-    attendance_data: Lista de dicts [{'timestamp': '...', 'user_id': '...'}]
-    job_rules: Dict {'hourly_rate': 10.0, 'overtime_rate': 15.0, ...}
-    """
-    
-    # 1. Si no hay datos, retornar ceros
+) -> dict:    
     if not attendance_data:
         return {
             "total_hours": 0.0,
@@ -20,27 +13,25 @@ def calculate_monthly_payroll(
             "details": []
         }
 
-    # 2. Convertir a DataFrame de Pandas
     df = pd.DataFrame(attendance_data)
     df['timestamp'] = pd.to_datetime(df['timestamp'])
     
-    # Agrupar por fecha (día)
+    #Agrupar por fecha (día)
     df['date'] = df['timestamp'].dt.date
     daily_groups = df.groupby('date')
     
     total_hours = 0.0
     daily_details = []
 
-    # 3. Iterar por cada día (La lógica de "Intérprete")
+    #Iterar por cada dia
     for day, group in daily_groups:
-        # Ordenar marcas por hora
         marks = group.sort_values('timestamp')['timestamp'].tolist()
         count = len(marks)
         
         hours_today = 0.0
         status = "Error"
         
-        # --- TU LÓGICA DE NEGOCIO (2 vs 4 marcas) ---
+        #LOGICA DE 2 MARCAS O 4 MARCAS
         if count == 2:
             # Entrada -> Salida
             worked = marks[1] - marks[0]
@@ -55,9 +46,8 @@ def calculate_monthly_payroll(
             status = "Completado (Con Almuerzo)"
             
         else:
-            # 1, 3, 5 marcas... Error
             status = "Error de Marcación"
-            hours_today = 0.0 # No pagamos días con errores
+            hours_today = 0.0
 
         total_hours += hours_today
         
@@ -65,13 +55,10 @@ def calculate_monthly_payroll(
             "date": day,
             "status": status,
             "hours_worked": round(hours_today, 2),
-            "is_overtime": hours_today > 8 # Asumiendo 8h jornada normal
+            "is_overtime": hours_today > 8
         })
-
-    # 4. Calcular Pago basado en el Status
-    # Aquí simplifico: todo lo que pase de 160h al mes es extra (ejemplo)
-    # O puedes sumar las horas extras diarias. Haremos extras diarias > 8h.
     
+    #Calculo de horas normales y extras
     regular_hours = 0.0
     overtime_hours = 0.0
     
@@ -82,7 +69,7 @@ def calculate_monthly_payroll(
         else:
             regular_hours += day["hours_worked"]
 
-    # Cálculo Monetario
+    #Calculo de pagos
     base_pay = regular_hours * job_rules.get('hourly_rate', 0)
     overtime_pay = overtime_hours * job_rules.get('overtime_rate', 0)
     bonus = job_rules.get('monthly_bonus', 0)
