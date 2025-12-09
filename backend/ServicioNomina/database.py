@@ -1,10 +1,8 @@
-# servicio-nomina/database.py
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from verification.settings import settings
 
-# --- Base de Datos de Nómina ---
 DB_NAME = "servicio_nomina"
 DEFAULT_DB_URL = f"mysql+pymysql://{settings.DB_USER}:{settings.DB_PASSWORD}@{settings.DB_HOST}:3306"
 SQLALCHEMY_DATABASE_URL = f"{DEFAULT_DB_URL}/{DB_NAME}"

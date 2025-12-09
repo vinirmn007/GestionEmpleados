@@ -4,12 +4,13 @@ from database import Base
 from datetime import datetime
 import enum
 
-# Enums para el estado del pago
+#ESTADO DEL ROL
 class PayrollStatus(str, enum.Enum):
     BORRADOR = "Borrador"       # Calculado pero no aprobado
     PENDIENTE = "Pendiente"    # Listo para pagar
     PAGADO = "Pagado"          # Enviado al banco
 
+#MODELOS PARA STATUS
 class JobStatus(Base):
     """
     Define los 'Status' o Cargos y sus reglas de pago.
@@ -31,6 +32,7 @@ class JobStatus(Base):
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
+#MODELO PARA ROL DE PAGO
 class Payroll(Base):
     """
     Representa un Rol de Pago guardado en la BD.
@@ -53,7 +55,6 @@ class Payroll(Base):
     
     # Egresos / Deducciones
     iess_deduction = Column(Float, default=0.0) # Aporte personal (9.45%)
-    tax_deduction = Column(Float, default=0.0)  # Impuesto a la renta
     total_deductions = Column(Float, nullable=False)
     
     # Liquido a recibir
@@ -68,6 +69,7 @@ class Payroll(Base):
     # (Por si reclaman: "Faltó el día 5")
     details_json = Column(JSON, nullable=True)
 
+#MODELO PARA REGLAS DE DEDUCCIÓN
 class DeductionRule(Base):
     __tablename__ = "deduction_rules"
 

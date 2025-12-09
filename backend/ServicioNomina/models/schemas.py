@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
 
+#statuses
 class JobStatusBase(BaseModel):
     name: str
     base_hourly_rate: float = Field(..., gt=0)
@@ -26,6 +27,7 @@ class JobStatusResponse(JobStatusBase):
     class Config:
         orm_mode = True
 
+#deduction rules
 class DeductionRuleBase(BaseModel):
     name: str
     description: str | None = None
@@ -46,13 +48,12 @@ class DeductionRuleResponse(DeductionRuleBase):
     class Config:
         orm_mode = True
 
-# --- Request para Generar ---
+#payrolls
 class PayrollGenerationRequest(BaseModel):
     user_id: str
     month: int
     year: int
 
-# --- Response (Lo que mostramos) ---
 class PayrollResponse(BaseModel):
     id: int
     user_id: str

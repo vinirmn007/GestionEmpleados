@@ -1,5 +1,3 @@
-# servicio-nomina/main.py
-
 import calendar
 from fastapi import FastAPI, Depends, HTTPException, status, Header
 from fastapi.middleware.cors import CORSMiddleware
@@ -29,6 +27,7 @@ is_manager = Depends(require_role("Gerente"))
 
 URL_REPORTES = "http://servicio-reportes-y-calculos:8000"
 
+#CRUD PARA GESTIONAR STATUS O CARGOS
 @app.post(
     "/statuses", 
     response_model=schemas.JobStatusResponse, 
@@ -57,9 +56,6 @@ async def list_job_statuses(
     skip: int = 0, 
     limit: int = 100
 ):
-    """
-    Lista todos los status configurados y sus tarifas.
-    """
     return crud.get_all_statuses(db, skip, limit)
 
 @app.put(
@@ -73,9 +69,6 @@ async def update_job_status(
     db: Annotated[Session, Depends(get_db)],
     payload: dict = is_manager
 ):
-    """
-    Actualiza tarifas o bonos de un status existente.
-    """
     updated_status = crud.update_status(db, status_id, update_data)
     if not updated_status:
         raise HTTPException(status_code=404, detail="Status no encontrado")
@@ -89,16 +82,15 @@ async def update_job_status(
 async def delete_job_status(
     status_id: int,
     db: Annotated[Session, Depends(get_db)],
-    payload: dict = is_manager # <-- PROTEGIDO
+    payload: dict = is_manager
 ):
-    """
-    Elimina un status.
-    """
     deleted = crud.delete_status(db, status_id)
     if not deleted:
         raise HTTPException(status_code=404, detail="Status no encontrado")
     return
 
+
+#GENERAR ROL DE PAGO
 @app.post(
     "/payrolls/generate",
     response_model=schemas.PayrollResponse,
@@ -111,24 +103,16 @@ async def generate_payroll(
     token_payload: dict = is_manager, # Solo Gerentes
     authorization: str = Header(None) # Necesitamos reenviar el token
 ):
-    """
-    1. Obtiene horas trabajadas (Servicio Reportes).
-    2. Aplica deducciones de ley (IESS).
-    3. Guarda el rol de pago en la BD.
-    """
     
-    # 1. Definir rango de fechas para el reporte (Mes completo)
-    # Primer día del mes
+    # DEFINIR EL RANFO DE FECHAS
     start_date = date(request.year, request.month, 1)
-    # Último día del mes (ej. 28, 30, 31)
     last_day = calendar.monthrange(request.year, request.month)[1]
     end_date = date(request.year, request.month, last_day)
 
-    # 2. Llamar al SERVICIO DE REPORTES
-    # Este servicio ya hace la magia de Pandas (2 vs 4 marcas, horas x precio)
+    #LOGICA DE MARCACIONES Y COMPUTOS EXTERNOS
     async with httpx.AsyncClient() as client:
         try:
-            # Reenviamos el token de autorización
+            #ENVIAR TOKEN DE AUTENTICACION
             headers = {"Authorization": authorization}
             
             response = await client.get(
@@ -147,40 +131,27 @@ async def generate_payroll(
         except Exception as e:
             raise HTTPException(status_code=502, detail=f"Fallo de conexión con Reportes: {e}")
 
-    # 3. LÓGICA DE DEDUCCIONES (Reglas de Negocio Financieras)
-    # El reporte nos da el "Ingreso Bruto Estimado" (estimated_gross_pay)
     gross_salary = report_data.get("estimated_gross_pay", 0.0)
-
-    # --- PASO 3 MEJORADO: Obtener configuración de la BD ---
     
-    # Buscamos la regla por su nombre clave
+    #APLICAR DEDUCCIONES
     iess_rule = db.query(models.DeductionRule).filter(
         models.DeductionRule.name == "IESS_PERSONAL",
         models.DeductionRule.is_active == True
     ).first()
 
     if not iess_rule:
-        # Fallback de seguridad o Error. 
-        # Opción A: Lanzar error para obligar a configurar
         raise HTTPException(status_code=500, detail="Falta configuración: IESS_PERSONAL no encontrado")
-        # Opción B (menos recomendada): Usar valor por defecto
-        # percentage = 9.45
 
-    # Calculamos usando el valor de la base de datos
-    # Nota: Si guardas 9.45, divide para 100. Si guardas 0.0945, úsalo directo.
     percentage_val = iess_rule.percentage / 100.0 
     
     iess_value = round(gross_salary * percentage_val, 2)
     
-    # Impuesto a la Renta (Simplificado: 0 por ahora, requiere lógica compleja anual)
-    tax_value = 0.0 
+    #AGREGAR MAS DEDUCCIONES
     
-    total_deductions = iess_value + tax_value
+    total_deductions = iess_value
+    #SALARIO NETO
     net_salary = gross_salary - total_deductions
-
-    # 4. GUARDAR EN BASE DE DATOS (Persistencia)
     
-    # Verificar si ya existe un rol para este mes (Evitar duplicados)
     existing_payroll = db.query(models.Payroll).filter(
         models.Payroll.user_id == request.user_id,
         models.Payroll.month == request.month,
@@ -188,7 +159,6 @@ async def generate_payroll(
     ).first()
     
     if existing_payroll:
-        # Opcional: Podrías actualizarlo en lugar de lanzar error
         raise HTTPException(status_code=400, detail="El rol de pago para este mes ya fue generado.")
 
     new_payroll = models.Payroll(
@@ -202,12 +172,11 @@ async def generate_payroll(
         
         gross_salary=gross_salary,
         iess_deduction=iess_value,
-        tax_deduction=tax_value,
         total_deductions=total_deductions,
         net_salary=net_salary,
         
-        status=models.PayrollStatus.BORRADOR, # Nace como borrador
-        details_json=report_data.get("details") # Guardamos el detalle diario
+        status=models.PayrollStatus.BORRADOR,
+        details_json=report_data.get("details")
     )
     
     db.add(new_payroll)
@@ -216,6 +185,7 @@ async def generate_payroll(
     
     return new_payroll
 
+#GENERAR DEDUCCIONES
 @app.post(
     "/deductions",
     response_model=schemas.DeductionRuleResponse,
@@ -227,9 +197,6 @@ async def create_deduction_rule(
     db: Annotated[Session, Depends(get_db)],
     payload: dict = is_manager  # Solo gerentes
 ):
-    """
-    Crea una nueva regla de deducción (ej: IESS_PERSONAL, 9.45%).
-    """
     existing = crud.get_deduction_rule_by_name(db, rule_data.name)
     if existing:
         raise HTTPException(status_code=400, detail="Ya existe una regla con ese nombre clave.")
@@ -247,9 +214,6 @@ async def list_deduction_rules(
     skip: int = 0,
     limit: int = 100
 ):
-    """
-    Lista todas las reglas de deducción configuradas.
-    """
     return crud.get_all_deduction_rules(db, skip, limit)
 
 @app.put(
@@ -263,9 +227,6 @@ async def update_deduction_rule(
     db: Annotated[Session, Depends(get_db)],
     payload: dict = is_manager
 ):
-    """
-    Actualiza el porcentaje o descripción de una deducción.
-    """
     updated_rule = crud.update_deduction_rule(db, rule_id, update_data)
     if not updated_rule:
         raise HTTPException(status_code=404, detail="Regla de deducción no encontrada")
