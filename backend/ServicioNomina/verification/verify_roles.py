@@ -1,6 +1,6 @@
 from fastapi import Depends, HTTPException, Header
 import jwt
-from settings import settings
+from .settings import settings
 
 SECRET_KEY = settings.AUTHJWT_SECRET_KEY
 ALGORITHM = "HS256"

@@ -35,3 +35,37 @@ def delete_status(db: Session, status_id: int):
         db.delete(db_status)
         db.commit()
     return db_status
+
+def get_deduction_rule_by_name(db: Session, name: str):
+    return db.query(models.DeductionRule).filter(models.DeductionRule.name == name).first()
+
+def get_all_deduction_rules(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.DeductionRule).offset(skip).limit(limit).all()
+
+def create_deduction_rule(db: Session, rule: schemas.DeductionRuleCreate):
+    db_rule = models.DeductionRule(
+        name=rule.name,
+        description=rule.description,
+        percentage=rule.percentage
+    )
+    db.add(db_rule)
+    db.commit()
+    db.refresh(db_rule)
+    return db_rule
+
+def update_deduction_rule(db: Session, rule_id: int, update_data: schemas.DeductionRuleUpdate):
+    db_rule = db.query(models.DeductionRule).filter(models.DeductionRule.id == rule_id).first()
+    if not db_rule:
+        return None
+    
+    # Actualizamos solo los campos que vengan en el request
+    if update_data.description is not None:
+        db_rule.description = update_data.description
+    if update_data.percentage is not None:
+        db_rule.percentage = update_data.percentage
+    if update_data.is_active is not None:
+        db_rule.is_active = update_data.is_active
+        
+    db.commit()
+    db.refresh(db_rule)
+    return db_rule

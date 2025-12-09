@@ -25,3 +25,46 @@ class JobStatusResponse(JobStatusBase):
 
     class Config:
         orm_mode = True
+
+class DeductionRuleBase(BaseModel):
+    name: str
+    description: str | None = None
+    percentage: float # 9.45
+
+class DeductionRuleCreate(DeductionRuleBase):
+    pass
+
+class DeductionRuleUpdate(BaseModel):
+    description: Optional[str] = None
+    percentage: Optional[float] = None
+    is_active: Optional[bool] = None
+
+class DeductionRuleResponse(DeductionRuleBase):
+    id: int
+    is_active: bool
+
+    class Config:
+        orm_mode = True
+
+# --- Request para Generar ---
+class PayrollGenerationRequest(BaseModel):
+    user_id: str
+    month: int
+    year: int
+
+# --- Response (Lo que mostramos) ---
+class PayrollResponse(BaseModel):
+    id: int
+    user_id: str
+    month: int
+    year: int
+    
+    gross_salary: float
+    total_deductions: float
+    net_salary: float
+    status: str
+    
+    generated_at: datetime
+
+    class Config:
+        orm_mode = True
