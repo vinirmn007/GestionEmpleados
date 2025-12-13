@@ -67,6 +67,13 @@ services:
     container_name: servicio-autenticacion
     networks:
       - sge-network
+    environment:
+      AUTHJWT_SECRET_KEY: "supersecretkey"
+      DB_HOST: "db-sge"
+      DB_USER: "fastapi_user"
+      DB_PASSWORD: "12345"
+      DB_NAME: "servicio_usuarios"
+      USER_SERVICE_URL: "http://servicio-usuarios:9001"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/docs"]
       interval: 5s
@@ -82,8 +89,6 @@ services:
       db-sge:
         condition: service_healthy
     environment:
-
-
       DB_HOST: "db-sge"
       DB_USER: "fastapi_user"
       DB_PASSWORD: "12345"
@@ -92,6 +97,90 @@ services:
       - sge-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9001/docs"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  servicio-asistencia:
+    build:
+      context: ./ServicioAsistencia
+    container_name: servicio-asistencia
+    depends_on:
+      db-sge:
+        condition: service_healthy
+    environment:
+      AUTHJWT_SECRET_KEY: "supersecretkey"
+      DB_HOST: "db-sge"
+      DB_USER: "fastapi_user"
+      DB_PASSWORD: "12345"
+      DB_NAME: "servicio_usuarios"
+    networks:
+      - sge-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9002/attendance/ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  servicio-horarios:
+    build:
+      context: ./ServicioHorarios
+    container_name: servicio-horarios
+    depends_on:
+      servicio-usuarios:
+        condition: service_healthy
+    environment:
+      USER_SERVICE_URL: "http://servicio-usuarios:9001"
+      DB_HOST: "db-sge"
+      DB_USER: "fastapi_user"
+      DB_PASSWORD: "12345"
+      DB_NAME: "servicio_usuarios"
+    networks:
+      - sge-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9003/docs"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  servicio-nomina:
+    build:
+      context: ./ServicioNomina
+    container_name: servicio-nomina
+    depends_on:
+      db-sge:
+        condition: service_healthy
+    environment:
+      AUTHJWT_SECRET_KEY: "supersecretkey"
+      URL_REPORTES: "http://servicio-reportes:9005"
+      DB_HOST: "db-sge"
+      DB_USER: "fastapi_user"
+      DB_PASSWORD: "12345"
+      DB_NAME: "servicio_usuarios"
+    networks:
+      - sge-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9004/docs"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  servicio-reportes:
+    build:
+      context: ./ServicioReportes
+    container_name: servicio-reportes
+    environment:
+      URL_USUARIOS: "http://servicio-usuarios:9001"
+      URL_ASISTENCIA: "http://servicio-asistencia:9002"
+      URL_NOMINA: "http://servicio-nomina:9004"
+    networks:
+      - sge-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9005/docs"]
       interval: 5s
       timeout: 5s
       retries: 10

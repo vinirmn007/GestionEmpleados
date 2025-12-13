@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import httpx
+import os
 
 from models.models import *
 from controller import create_access_token
@@ -17,7 +18,7 @@ app.add_middleware(
 )
 
 #USER_SERVICE_URL = "http://servicio-usuarios:9001"
-USER_SERVICE_URL = "http://127.0.0.1:9001"
+USER_SERVICE_URL = os.getenv("USER_SERVICE_URL", "http://127.0.0.1:9001")
 
 @app.get("/auth")
 def read_root():

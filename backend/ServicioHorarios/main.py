@@ -7,6 +7,7 @@ from models.horario_model import Horario
 from schemas.horario_schema import HorarioCreate, HorarioResponse, HorarioBase
 from crud.horario_crud import create_horario, get_horarios_by_user, update_horario, delete_horario
 import requests
+import os
 
 
 
@@ -15,8 +16,7 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Servicio de Gestión de Horarios")
 
-USER_SERVICE_URL = "http://localhost:8001"
-#USER_SERVICE_URL = "http://servicio-usuarios:9001"
+USER_SERVICE_URL = os.getenv("USER_SERVICE_URL", "http://localhost:8001")
 
 
 def validar_usuario(user_id: int):

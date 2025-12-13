@@ -1,4 +1,5 @@
 import calendar
+import os
 from fastapi import FastAPI, Depends, HTTPException, status, Header
 from fastapi.middleware.cors import CORSMiddleware
 import httpx
@@ -25,7 +26,7 @@ app.add_middleware(
 
 is_manager = Depends(require_role("Gerente"))
 
-URL_REPORTES = "http://servicio-reportes-y-calculos:8000"
+URL_REPORTES = os.getenv("URL_REPORTES", "http://servicio-reportes-y-calculos:8000")
 
 #CRUD PARA GESTIONAR STATUS O CARGOS
 @app.post(
