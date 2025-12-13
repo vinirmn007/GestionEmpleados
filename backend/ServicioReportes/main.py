@@ -2,15 +2,16 @@ from fastapi import FastAPI, Depends, HTTPException, Header
 from typing import List
 import httpx
 from datetime import date
+import os
 
 import schemas, logic
 
 app = FastAPI(title="Servicio de Reportes y Cálculos")
 
 #URLs de los otros microservicios
-URL_USUARIOS = "http://servicio-usuarios:8000"
-URL_ASISTENCIA = "http://servicio-asistencia:8000"
-URL_NOMINA = "http://servicio-nomina:8000"
+URL_USUARIOS = os.getenv("URL_USUARIOS", "http://servicio-usuarios:8000")
+URL_ASISTENCIA = os.getenv("URL_ASISTENCIA", "http://servicio-asistencia:8000")
+URL_NOMINA = os.getenv("URL_NOMINA", "http://servicio-nomina:8000")
 
 @app.get(
     "/reports/payroll-preview/{user_id}",
