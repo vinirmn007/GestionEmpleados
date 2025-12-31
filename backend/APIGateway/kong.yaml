@@ -9,6 +9,10 @@ services:
   url: http://servicio-asistencia:9002
 - name: schedules-service
   url: http://servicio-horarios:9003
+- name: nomina-service
+  url: http://servicio-nomina:9004
+- name: reports-service
+  url: http://servicio-reportes:9005
 
 routes:
 - name: auth-route
@@ -33,5 +37,17 @@ routes:
   service: schedules-service
   paths:
   - /horarios
+  strip_path: true
+  
+- name: nomina-route
+  service: nomina-service
+  paths:
+  - /nomina
+  strip_path: true
+  
+- name: reports-route
+  service: reports-service
+  paths:
+  - /reportes
   strip_path: true
 
