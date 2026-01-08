@@ -6,6 +6,12 @@ from utils.security import hash_password, verify_password
 def get_user_by_email(db: Session, correo: str):
     return db.query(Usuario).filter(Usuario.correo == correo).first()
 
+def get_user_by_dni(db: Session, dni: str):
+    return db.query(Usuario).filter(Usuario.dni == dni).first()
+
+def get_user_by_celular(db: Session, celular: str):
+    return db.query(Usuario).filter(Usuario.celular == celular).first()
+
 def verify_user_password(db: Session, correo: str, password: str):
     user = get_user_by_email(db, correo)
     if not user:
@@ -21,6 +27,9 @@ def create_user(db, usuario: UsuarioCreate):
     db_user = Usuario(
         nombre=usuario.nombre,
         correo=usuario.correo,
+        celular=usuario.celular,
+        dni=usuario.dni,
+        direccion=usuario.direccion,
         hashed_password=hashed,
         activo=True,
         rol=usuario.rol,

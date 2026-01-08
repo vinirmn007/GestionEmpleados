@@ -14,7 +14,7 @@
         error = '';
         try {
             // Llama a: Kong -> Auth Service -> /auth/login
-            const { data } = await api.post('/auth/auth/login', { email, password });
+            const { data } = await api.post('/auth/login', { email, password });
             
             // Decodificar token para obtener info del usuario si es necesario
             const decoded = jwtDecode(data.access_token);

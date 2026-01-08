@@ -18,7 +18,7 @@ app.add_middleware(
 )
 
 #USER_SERVICE_URL = "http://servicio-usuarios:9001"
-USER_SERVICE_URL = os.getenv("USER_SERVICE_URL", "http://127.0.0.1:9001")
+USER_SERVICE_URL = os.getenv("USER_SERVICE_URL", "http://servicio-usuarios:9001")
 
 @app.get("/auth")
 def read_root():

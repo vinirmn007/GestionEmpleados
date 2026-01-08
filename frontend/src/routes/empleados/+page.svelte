@@ -13,8 +13,9 @@
     async function loadEmpleados() {
         try {
             // Nota: User Service necesita un endpoint GET /usuarios
-            const { data } = await api.get('/usuarios/usuarios'); 
-            empleados = data;
+            const { data } = await api.get('/usuarios/list'); 
+            empleados = data.data;
+            console.log("Empleados cargados", empleados);
         } catch (e) {
             console.error("Error cargando empleados", e);
             // Fallback data para visualización si el back falla
@@ -60,8 +61,7 @@
                 <tr>
                     <th class="px-6 py-4">Nombre Completo</th>
                     <th class="px-6 py-4">ID Empleado</th>
-                    <th class="px-6 py-4">Departamento</th>
-                    <th class="px-6 py-4">Puesto</th>
+                    <th class="px-6 py-4">Correo</th>
                     <th class="px-6 py-4">Estado</th>
                     <th class="px-6 py-4">Acciones</th>
                 </tr>
@@ -70,11 +70,10 @@
                 {#each empleados as emp}
                     <tr class="hover:bg-gray-50">
                         <td class="flex items-center gap-3 px-6 py-4">
-                            <div class="h-10 w-10 rounded-full bg-gray-200"></div> <span class="font-medium text-gray-900">{emp.name}</span>
+                            <div class="h-10 w-10 rounded-full bg-gray-200"></div> <span class="font-medium text-gray-900">{emp.nombre}</span>
                         </td>
                         <td class="px-6 py-4 text-gray-500">{emp.id}</td>
-                        <td class="px-6 py-4 text-gray-500">{emp.dept}</td>
-                        <td class="px-6 py-4 text-gray-500">{emp.job}</td>
+                        <td class="px-6 py-4 text-gray-500">{emp.correo}</td>
                         <td class="px-6 py-4">
                             <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
                                 {emp.status}
