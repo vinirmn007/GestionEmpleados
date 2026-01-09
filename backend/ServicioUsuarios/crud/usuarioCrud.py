@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from models.usuario_model import Usuario
 from schemas.usuario import UsuarioCreate
 from utils.security import hash_password, verify_password
+from sqlalchemy.exc import IntegrityError
 
 def get_user_by_email(db: Session, correo: str):
     return db.query(Usuario).filter(Usuario.correo == correo).first()
@@ -53,9 +54,15 @@ def delete_user(db: Session, user_id: int):
     u = get_user(db, user_id)
     if not u:
         return None
-    db.delete(u)
-    db.commit()
-    return u
+    
+    try:
+        db.delete(u)
+        db.commit()
+        return u
+    except IntegrityError:
+        db.rollback() # Revertir la transacción fallida
+        print("Error: No se puede borrar porque el usuario tiene datos asociados (asistencias, roles, etc).")
+        return False # O lanzar una excepción personalizada
 
 def get_usuarios_paginated(db: Session, skip: int = 0, limit: int = 10):
     query = db.query(Usuario)
