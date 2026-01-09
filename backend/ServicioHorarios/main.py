@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -16,11 +17,19 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Servicio de Gestión de Horarios")
 
-USER_SERVICE_URL = os.getenv("USER_SERVICE_URL", "http://localhost:8001")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+USER_SERVICE_URL = os.getenv("USER_SERVICE_URL", "http://servicio-usuarios:9001")
 
 
 def validar_usuario(user_id: int):
-    url = f"{USER_SERVICE_URL}/usuarios/{user_id}"
+    url = f"{USER_SERVICE_URL}/usuarios/get/{user_id}"
     try:
         resp = requests.get(url)
         if resp.status_code == 404:
