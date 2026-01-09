@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import Annotated, List
 from datetime import datetime, date, timezone, timedelta
+from database import Base, engine
+import httpx
 
 from verification.verify_roles import require_role
 
@@ -24,6 +26,8 @@ app.add_middleware(
 
 is_employee = Depends(require_role("Empleado"))
 is_manager = Depends(require_role("Gerente"))
+
+USUARIOS_SERVICE_URL = "http://servicio-usuarios:9001"
 
 @app.post("/attendance/mark", response_model=mark_schema.MarkStatusResponse, tags=["Asistencia (Empleado)"])
 async def create_new_mark(db: Annotated[Session, Depends(get_db)],payload: Annotated[dict, is_employee]):
@@ -76,6 +80,46 @@ async def get_attendance_history(
     return marks
 
 
+@app.get("/attendance/reporte", response_model=list) # Define un schema adecuado
+async def obtener_reporte_diario(
+    target_date: date,
+    db: Session = Depends(get_db),
+    # payload: dict = Depends(require_role("Gerente")) # Descomenta para seguridad
+):
+    # 1. Traer todos los usuarios del otro microservicio
+    async with httpx.AsyncClient() as client:
+        try:
+            resp = await client.get(f"{USUARIOS_SERVICE_URL}/usuarios/all")
+            usuarios = resp.json()
+        except Exception as e:
+            raise HTTPException(status_code=503, detail="No se pudo conectar con el servicio de Usuarios")
+
+    reporte_final = []
+
+    # 2. Iterar usuarios y buscar sus marcas LOCALMENTE (en la BD de asistencia)
+    for usuario in usuarios:
+        user_id = str(usuario["id"]) # Asegúrate que los tipos coincidan (int/str)
+        
+        # Esta función ya la tienes en tu CRUD, úsala directo a la BD (sin HTTP)
+        marcas = crud.get_marks_for_day(db, user_id, target_date)
+
+        estado = "Adentro" if len(marcas) % 2 != 0 else "Afuera"
+        
+        # 3. Calcular horas AQUÍ (en Python, no en JS)
+        
+        # 4. Construir objeto fusionado
+        fila = {
+            "user_id": usuario["id"],
+            "nombre": usuario["nombre"],
+            "marcas": [m.timestamp for m in marcas], # Opcional: serializar marcas
+            "estado": estado
+        }
+        reporte_final.append(fila)
+
+    return reporte_final
+
 @app.get("/attendance/ping")
 def ping():
     return {"mensaje": "Servicio de Asistencia operativo ✅"}
+
+Base.metadata.create_all(bind=engine)
