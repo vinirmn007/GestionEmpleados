@@ -9,15 +9,17 @@ app = FastAPI(title="Servicio Usuarios")
 origins = [
     #Para pruebas:"http://localhost:9000"
     #"http://servicio-autenticacion:9000" #ruta del docker-compose
-    "*"
+    "http://localhost:5173",
+    "http://servicio-autenticacion:9000",
+    "http://0.0.0.0:5173"
 ]
 
 #cinfigurar cors
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins= ["*"],
     allow_credentials=True,
-    allow_methods=["get"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 

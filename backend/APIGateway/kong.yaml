@@ -30,8 +30,8 @@ routes:
 - name: assist-route
   service: assist-service
   paths:
-  - /asistencia
-  strip_path: true
+  - /attendance
+  strip_path: false
   
 - name: schedules-route
   service: schedules-service

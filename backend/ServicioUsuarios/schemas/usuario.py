@@ -10,6 +10,9 @@ class RolEnum(str, Enum):
 class UsuarioBase(BaseModel):
     nombre: str
     correo: EmailStr
+    celular: str
+    dni: str
+    direccion: str
     rol: RolEnum  = RolEnum.empleado
 
 class UsuarioCreate(UsuarioBase):

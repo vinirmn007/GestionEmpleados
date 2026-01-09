@@ -16,7 +16,7 @@ services:
       KONG_STATUS_LISTEN: "0.0.0.0:8002"
 
     ports:
-      - "80:8000" 
+      - "8000:8000" 
       - "8001:8001" 
 
     volumes:
