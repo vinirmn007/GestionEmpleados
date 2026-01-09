@@ -34,29 +34,29 @@ La organización del código fuente sigue una arquitectura modular, separando la
 frontend/
 ├── src/
 │   ├── lib/
-[cite_start]│   │   ├── api/              # Capa de servicios para consumo de API [cite: 210]
-[cite_start]│   │   │   ├── axios.js      # Configuración de Axios e interceptores [cite: 211]
-[cite_start]│   │   │   ├── auth.js       # Endpoints de autenticación [cite: 249]
-[cite_start]│   │   │   ├── users.js      # Endpoints de usuarios [cite: 250]
-[cite_start]│   │   │   └── attendance.js # Endpoints de asistencia [cite: 251]
+│   ├── api/              # Capa de servicios para consumo de API 
+│   │   ├── axios.js      # Configuración de Axios e interceptores 
+│   │   ├── auth.js       # Endpoints de autenticación 
+│   │   ├── users.js      # Endpoints de usuarios 
+│   │   └── attendance.js # Endpoints de asistencia 
 │   │   │
-[cite_start]│   │   ├── components/       # Componentes UI reutilizables [cite: 255]
-[cite_start]│   │   │   ├── Sidebar.svelte # Navegación lateral [cite: 256]
+│   ├── components/       # Componentes UI reutilizables 
+│   │   ├── Sidebar.svelte # Navegación lateral 
 │   │   │   ├── Navbar.svelte  # Barra superior
-[cite_start]│   │   │   ├── Table.svelte   # Tablas de datos estandarizadas [cite: 258]
-[cite_start]│   │   │   └── Modal.svelte   # Ventanas emergentes para formularios [cite: 260]
+│   │   ├── Table.svelte   # Tablas de datos estandarizadas 
+│   │   └── Modal.svelte   # Ventanas emergentes para formularios 
 │   │   │
-[cite_start]│   │   └── stores/           # Gestión de estado global [cite: 262]
-[cite_start]│   │       └── auth.js       # Store de sesión (Login/Logout/Token) [cite: 249]
+│   └── stores/           # Gestión de estado global 
+│       └── auth.js       # Store de sesión (Login/Logout/Token) 
 │   │
-[cite_start]│   └── routes/               # Páginas y Rutas del sistema [cite: 24]
-[cite_start]│       ├── login/            # Inicio de sesión [cite: 37]
-[cite_start]│       ├── dashboard/        # Panel principal [cite: 110]
-[cite_start]│       ├── empleados/        # Gestión CRUD de empleados 
-[cite_start]│       ├── asistencia/       # Registro y reporte de asistencia [cite: 144]
-[cite_start]│       ├── horarios/         # Gestión de horarios [cite: 156]
-[cite_start]│       ├── nomina/           # Roles de pago [cite: 175]
-[cite_start]│       └── reportes/         # Estadísticas del sistema [cite: 189]
+└── routes/               # Páginas y Rutas del sistema 
+    ├── login/            # Inicio de sesión 
+    ├── dashboard/        # Panel principal 
+    ├── empleados/        # Gestión CRUD de empleados 
+    ├── asistencia/       # Registro y reporte de asistencia 
+    ├── horarios/         # Gestión de horarios 
+    ├── nomina/           # Roles de pago 
+    └── reportes/         # Estadísticas del sistema 
 └── package.json
 ```
 ## Pasos para la ejecucion
