@@ -40,6 +40,7 @@
                     console.error("Error eliminando empleado", e);
                 }
             }
+            deleteEmpleado();
         }
     }
 
