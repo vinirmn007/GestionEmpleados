@@ -2,6 +2,7 @@
     import { page } from '$app/stores';
     import { auth } from '$lib/stores/auth';
     import { goto } from '$app/navigation';
+    import ThemeToggle from '$lib/components/ThemeToggle.svelte';
     
     // Iconos importados de lucide-svelte
     import { 
