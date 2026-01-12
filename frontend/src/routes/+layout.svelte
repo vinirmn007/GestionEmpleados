@@ -16,6 +16,7 @@
 
     import { page } from '$app/stores';
     import { auth } from '$lib/stores/auth';
+    import { theme } from '$lib/stores/theme';
     import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
     import Sidebar from '$lib/components/Sidebar.svelte';
@@ -24,6 +25,11 @@
     $: isLoginPage = $page.url.pathname === '/login';
 
     onMount(() => {
+        // Initialize theme on mount
+        if ($theme === 'dark') {
+            document.documentElement.classList.add('dark');
+        }
+        
         if (!$auth.isAuthenticated && !isLoginPage) {
             goto('/login');
         }
@@ -33,11 +39,11 @@
 {#if isLoginPage}
     <slot />
 {:else}
-    <div class="flex h-screen bg-gray-50">
+    <div class="flex h-screen bg-gray-50 dark:bg-gray-900">
         <Sidebar />
         <div class="flex-1 flex flex-col overflow-hidden">
             <Navbar user={$auth.user} />
-            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6">
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-900 p-6">
                 <slot />
             </main>
         </div>
