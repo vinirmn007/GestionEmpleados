@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from typing import List
 from database import SessionLocal
-from schemas.usuario import UserRequest, UsuarioCreate, UsuarioRead, UserRolesResponse, UserIdResponse , PaginatedUsuarios
+from schemas.usuario import UserRequest, UsuarioCreate, UsuarioRead, UserRolesResponse, UserIdResponse , PaginatedUsuarios, UsuarioUpdate
 from models.usuario_model import Usuario
 from crud.usuarioCrud import *
 
@@ -60,15 +60,25 @@ def obtener_usuario(user_id: int, db: Session = Depends(get_db)):
 
 
 @router.put("/update/{user_id}", response_model=UsuarioRead)
-def actualizar_usuario(user_id: int, usuario: UsuarioCreate, db: Session = Depends(get_db)):
+def actualizar_usuario(
+    user_id: int, 
+    usuario: UsuarioUpdate,
+    db: Session = Depends(get_db)
+):
     existente = get_user(db, user_id)
     if not existente:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    
+    # Usamos exclude_unset=True para enviar solo los datos que realmente vinieron
+    # (Pydantic v2 usa model_dump(), v1 usa dict())
+    datos_a_actualizar = usuario.dict(exclude_unset=True) 
+    
     actualizado = update_user(
-        db, user_id,
-        nombre=usuario.nombre,
-        correo=usuario.correo
+        db, 
+        user_id,
+        **datos_a_actualizar
     )
+    
     return actualizado
 
 

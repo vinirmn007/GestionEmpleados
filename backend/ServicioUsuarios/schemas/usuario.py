@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel, EmailStr
 from enum import Enum
 
@@ -17,6 +17,12 @@ class UsuarioBase(BaseModel):
 
 class UsuarioCreate(UsuarioBase):
     password: str
+
+class UsuarioUpdate(BaseModel):
+    nombre: Optional[str] = None
+    correo: Optional[EmailStr] = None
+    celular: Optional[str] = None
+    direccion: Optional[str] = None
 
 class UsuarioRead(UsuarioBase):
     id: int
