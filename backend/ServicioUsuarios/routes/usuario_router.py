@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status, Query, Header
 from sqlalchemy.orm import Session
 from typing import List
 from database import SessionLocal
 from schemas.usuario import UserRequest, UsuarioCreate, UsuarioRead, UserRolesResponse, UserIdResponse , PaginatedUsuarios
 from models.usuario_model import Usuario
 from crud.usuarioCrud import *
+from utils.verify_roles import require_role
+
 
 router = APIRouter(
     prefix="/usuarios",
@@ -31,7 +33,8 @@ def crear_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
     return nuevo_usuario
 
 @router.get("/all", response_model=list[UsuarioRead])
-def listar_usuarios(db: Session = Depends(get_db)):
+
+def listar_usuarios(db: Session = Depends(get_db), payload: dict = Depends(require_role("gerente"))):
     usuarios = db.query(Usuario).all()  
     return usuarios
 
@@ -39,7 +42,9 @@ def listar_usuarios(db: Session = Depends(get_db)):
 def listar_usuarios_pag(
     skip: int = Query(0, ge=0),
     limit: int = Query(10, ge=1, le=100),
-    db: Session = Depends(get_db)
+
+    db: Session = Depends(get_db),
+    payload: dict = Depends(require_role("gerente"))
     ):
     total, usuarios = get_usuarios_paginated(db, skip, limit)
     return {
@@ -74,7 +79,8 @@ def actualizar_usuario(user_id: int, usuario: UsuarioCreate, db: Session = Depen
 
 
 @router.delete("/delete/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-def eliminar_usuario(user_id: int, db: Session = Depends(get_db)):
+
+def eliminar_usuario(user_id: int, db: Session = Depends(get_db), payload: dict = Depends(require_role("gerente"))):
     eliminado = delete_user(db, user_id)
     if not eliminado:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")

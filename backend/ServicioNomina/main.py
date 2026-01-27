@@ -59,6 +59,21 @@ async def list_job_statuses(
 ):
     return crud.get_all_statuses(db, skip, limit)
 
+@app.get(
+    "/statuses/{status_id}", 
+    response_model=schemas.JobStatusResponse,
+    tags=["Gestión de Status/Cargos"]
+)
+async def get_job_status(
+    status_id: int,
+    db: Annotated[Session, Depends(get_db)],
+    payload: dict = is_manager
+):
+    status_obj = crud.get_status(db, status_id)
+    if not status_obj:
+        raise HTTPException(status_code=404, detail="Status no encontrado")
+    return status_obj
+
 @app.put(
     "/statuses/{status_id}", 
     response_model=schemas.JobStatusResponse,

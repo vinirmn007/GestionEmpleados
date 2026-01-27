@@ -35,7 +35,7 @@ async def get_payroll_calculation(
     async with httpx.AsyncClient() as client:
         #Obtener datos del USUARIO (necesitamos saber su job_status_id)
         try:
-            r_user = await client.get(f"{URL_USUARIOS}/users/{user_id}", headers=headers)
+            r_user = await client.get(f"{URL_USUARIOS}/usuarios/get/{user_id}", headers=headers)
             r_user.raise_for_status()
             user_data = r_user.json()
             job_status_id = user_data.get("job_status_id")

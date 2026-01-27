@@ -15,3 +15,4 @@ class Usuario(Base):
     hashed_password = Column(String(256), nullable=False)
     activo = Column(Boolean, default=True)
     rol = Column(SqlEnum(RolEnum), default=RolEnum.empleado) 
+    job_status_id = Column(Integer, nullable=True) 

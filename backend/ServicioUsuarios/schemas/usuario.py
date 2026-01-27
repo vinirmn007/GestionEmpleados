@@ -14,6 +14,7 @@ class UsuarioBase(BaseModel):
     dni: str
     direccion: str
     rol: RolEnum  = RolEnum.empleado
+    job_status_id: int | None = None
 
 class UsuarioCreate(UsuarioBase):
     password: str
