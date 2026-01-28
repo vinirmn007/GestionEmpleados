@@ -16,7 +16,10 @@ def decode_jwt(token: str):
         raise HTTPException(status_code=401, detail="Token inválido")
 
 
-async def get_current_user(authorization: str = Header(...)):
+async def get_current_user(authorization: str = Header(None)):
+    if not authorization:
+        raise HTTPException(status_code=401, detail="No se proporcionó token de autenticación")
+
     if not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Encabezado Authorization inválido")
 
