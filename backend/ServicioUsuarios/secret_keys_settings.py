@@ -1,9 +1,13 @@
 from pydantic.v1 import BaseSettings
 
 class Settings(BaseSettings):
-    AUTHJWT_SECRET_KEY: str = "secret-key-123"
+    AUTHJWT_SECRET_KEY: str
+
+    DB_PASSWORD: str
+    DB_HOST: str
+    DB_USER: str
 
     class Config:
-        case_sensitive = True
+        env_file = ".env"
 
 settings = Settings()

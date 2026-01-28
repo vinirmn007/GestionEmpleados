@@ -69,7 +69,7 @@ services:
     networks:
       - sge-network
     environment:
-      AUTHJWT_SECRET_KEY: "supersecretkey"
+      AUTHJWT_SECRET_KEY: "alexisjosue12345"
       DB_HOST: "db-sge"
       DB_USER: "fastapi_user"
       DB_PASSWORD: "12345"
@@ -91,6 +91,7 @@ services:
       db-sge:
         condition: service_healthy
     environment:
+      AUTHJWT_SECRET_KEY: "alexisjosue12345"
       DB_HOST: "db-sge"
       DB_USER: "fastapi_user"
       DB_PASSWORD: "12345"
@@ -113,7 +114,7 @@ services:
       db-sge:
         condition: service_healthy
     environment:
-      AUTHJWT_SECRET_KEY: "supersecretkey"
+      AUTHJWT_SECRET_KEY: "alexisjosue12345"
       DB_HOST: "db-sge"
       DB_USER: "fastapi_user"
       DB_PASSWORD: "12345"
@@ -159,7 +160,7 @@ services:
       db-sge:
         condition: service_healthy
     environment:
-      AUTHJWT_SECRET_KEY: "supersecretkey"
+      AUTHJWT_SECRET_KEY: "alexisjosue12345"
       URL_REPORTES: "http://servicio-reportes:9005"
       DB_HOST: "db-sge"
       DB_USER: "fastapi_user"

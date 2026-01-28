@@ -18,7 +18,7 @@ app = FastAPI(title="Servicio de Asistencia")
 #CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:5173", "http://localhost:8000", "http://127.0.0.1:5173", "*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -80,16 +80,22 @@ async def get_attendance_history(
     return marks
 
 
-@app.get("/attendance/reporte", response_model=list) # Define un schema adecuado
+@app.get("/attendance/reporte", response_model=list)
 async def obtener_reporte_diario(
     target_date: date,
+    authorization: str = Header(None),
     db: Session = Depends(get_db),
     # payload: dict = Depends(require_role("Gerente")) # Descomenta para seguridad
 ):
+    if not authorization:
+         raise HTTPException(status_code=401, detail="Token requerido para esta operación")
+
     # 1. Traer todos los usuarios del otro microservicio
     async with httpx.AsyncClient() as client:
         try:
-            resp = await client.get(f"{USUARIOS_SERVICE_URL}/usuarios/all")
+            headers = {"Authorization": authorization}
+            resp = await client.get(f"{USUARIOS_SERVICE_URL}/usuarios/all", headers=headers)
+            resp.raise_for_status() # Lanza error si no es 200
             usuarios = resp.json()
         except Exception as e:
             raise HTTPException(status_code=503, detail="No se pudo conectar con el servicio de Usuarios")

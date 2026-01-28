@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 DB_USER = os.getenv("DB_USER", "fastapi_user")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "12345")
-DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_HOST = os.getenv("DB_HOST", "db-sge")
 DB_NAME = os.getenv("DB_NAME", "servicio_usuarios")
 
 SQLALCHEMY_DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
