@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import timedelta
+from datetime import timedelta, timezone
 
 def calculate_monthly_payroll(
     attendance_data: list, 
@@ -7,15 +7,32 @@ def calculate_monthly_payroll(
 ) -> dict:    
     if not attendance_data:
         return {
-            "total_hours": 0.0,
-            "overtime_hours": 0.0,
+            "total_regular_hours": 0.0,
+            "total_overtime_hours": 0.0,
             "gross_pay": 0.0,
             "details": []
         }
 
     df = pd.DataFrame(attendance_data)
-    df['timestamp'] = pd.to_datetime(df['timestamp'])
     
+    # Manejo de timestamps (que ahora vienen como objetos con 'timestamp' o strings si falló algo)
+    # attendance_data = [{"id": 1, "timestamp": "...", ...}, ...]
+    if 'timestamp' in df.columns:
+        df['timestamp'] = pd.to_datetime(df['timestamp'])
+    else:
+        # fallback si viniera lista de strings (legacy)
+        df = pd.DataFrame({'timestamp': attendance_data})
+        df['timestamp'] = pd.to_datetime(df['timestamp'])
+
+    # Convertir UTC a Local (-5)
+    # Suponiendo que la BD guarda en UTC. 
+    # Si df['timestamp'] no tiene tz-info, asumimos que es UTC y localizamos.
+    if df['timestamp'].dt.tz is None:
+        df['timestamp'] = df['timestamp'].dt.tz_localize('UTC')
+    
+    # Convertir a zona horaria local (-5) o America/Guayaquil
+    df['timestamp'] = df['timestamp'].dt.tz_convert(timezone(timedelta(hours=-5)))
+
     #Agrupar por fecha (día)
     df['date'] = df['timestamp'].dt.date
     daily_groups = df.groupby('date')
@@ -76,9 +93,16 @@ def calculate_monthly_payroll(
     
     gross_pay = base_pay + overtime_pay + bonus
 
+
+    # Convert details dates to string for JSON serialization
+    final_details = []
+    for d in daily_details:
+        d["date"] = str(d["date"])
+        final_details.append(d)
+
     return {
         "total_regular_hours": round(regular_hours, 2),
         "total_overtime_hours": round(overtime_hours, 2),
         "gross_pay": round(gross_pay, 2),
-        "details": daily_details
+        "details": final_details
     }

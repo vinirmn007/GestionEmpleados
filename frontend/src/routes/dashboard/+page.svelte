@@ -8,6 +8,8 @@
         Clock,
         Activity,
         ArrowRight,
+        FileText,
+        Briefcase,
     } from "lucide-svelte";
 
     let loading = true;
@@ -369,17 +371,32 @@
                             >
                         </a>
                         <a
-                            href="/nomina"
+                            href="/roles"
                             class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-purple-300 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all group"
                         >
                             <div
                                 class="p-2 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-lg group-hover:bg-purple-200 dark:group-hover:bg-purple-900/50"
                             >
-                                <Activity size={18} />
+                                <FileText size={18} />
                             </div>
                             <span
                                 class="font-medium text-gray-700 dark:text-gray-300 group-hover:text-purple-800 dark:group-hover:text-purple-300"
-                                >Generar Nómina</span
+                                >Roles de Pago</span
+                            >
+                        </a>
+
+                        <a
+                            href="/status"
+                            class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-orange-300 dark:hover:border-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all group"
+                        >
+                            <div
+                                class="p-2 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-lg group-hover:bg-orange-200 dark:group-hover:bg-orange-900/50"
+                            >
+                                <Briefcase size={18} />
+                            </div>
+                            <span
+                                class="font-medium text-gray-700 dark:text-gray-300 group-hover:text-orange-800 dark:group-hover:text-orange-300"
+                                >Cargos / Status</span
                             >
                         </a>
                     </div>

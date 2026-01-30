@@ -76,6 +76,7 @@
         correo: "",
         celular: "",
         direccion: "",
+        numero_cuenta: "",
         rol: "empleado",
         activo: true,
         job_status_id: null,
@@ -111,6 +112,7 @@
                 correo: currentEmployee.correo,
                 celular: currentEmployee.celular,
                 direccion: currentEmployee.direccion,
+                numero_cuenta: currentEmployee.numero_cuenta,
                 rol: currentEmployee.rol,
                 activo: currentEmployee.activo,
                 job_status_id: currentEmployee.job_status_id,
@@ -236,6 +238,20 @@
                         bind:value={currentEmployee.direccion}
                         required
                         class="block w-full rounded-lg border border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    />
+                </div>
+
+                <!-- Numero de Cuenta -->
+                <div class="col-span-1 sm:col-span-2">
+                    <label
+                        class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                        >Número de Cuenta Bancaria</label
+                    >
+                    <input
+                        type="text"
+                        bind:value={currentEmployee.numero_cuenta}
+                        class="block w-full rounded-lg border border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        placeholder="Ej. Ahorros 1234567890"
                     />
                 </div>
 

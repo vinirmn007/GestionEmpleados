@@ -9,12 +9,30 @@
         User,
         ArrowDown,
         ArrowUp,
+        Edit,
+        Trash2,
+        Plus,
+        X,
+        Save,
+        Check,
+        AlertTriangle,
     } from "lucide-svelte";
 
     let loading = false;
     let reporte = [];
     let selectedDate = new Date().toISOString().split("T")[0];
     let searchTerm = "";
+
+    // Modal state
+    let showModal = false;
+    let editingUser = null;
+    let editingMarks = [];
+
+    let newMarkTime = "";
+
+    // Delete Modal State
+    let showDeleteModal = false;
+    let markToDeleteIndex = null;
 
     onMount(() => {
         fetchReporte();
@@ -47,7 +65,11 @@
         if (!marks || marks.length < 2) return "0h 0m";
 
         let totalMs = 0;
-        const sorted = [...marks].sort((a, b) => new Date(a) - new Date(b));
+        // Extract timestamps from objects if needed
+        const timestamps = marks.map((m) => (m.timestamp ? m.timestamp : m));
+        const sorted = [...timestamps].sort(
+            (a, b) => new Date(a) - new Date(b),
+        );
 
         for (let i = 0; i < sorted.length - 1; i += 2) {
             const inTime = new Date(sorted[i]);
@@ -59,6 +81,95 @@
         const minutes = Math.floor((totalMs % (1000 * 60 * 60)) / (1000 * 60));
 
         return `${hours}h ${minutes}m`;
+    }
+
+    function openEditModal(user) {
+        editingUser = user;
+        // Deep copy marks to avoid mutating directly
+        editingMarks = user.marcas.map((m) => ({ ...m }));
+        showModal = true;
+    }
+
+    function closeEditModal() {
+        showModal = false;
+        editingUser = null;
+        editingMarks = [];
+        newMarkTime = "";
+    }
+
+    async function saveMarkChange(index) {
+        const mark = editingMarks[index];
+        try {
+            await api.put(`/attendance/mark/${mark.id}`, {
+                timestamp: mark.timestamp,
+            });
+            // Refresh
+            await fetchReporte();
+            // Update local state to reflect change (optional, but good for UX)
+            // But fetchReporte will overwrite everything anyway
+            alert("Marca actualizada");
+        } catch (error) {
+            console.error("Error updating mark:", error);
+            alert("Error al actualizar marca");
+        }
+    }
+
+    function openDeleteModal(index) {
+        markToDeleteIndex = index;
+        showDeleteModal = true;
+    }
+
+    function closeDeleteModal() {
+        showDeleteModal = false;
+        markToDeleteIndex = null;
+    }
+
+    async function confirmDelete() {
+        if (markToDeleteIndex === null) return;
+        const mark = editingMarks[markToDeleteIndex];
+        try {
+            await api.delete(`/attendance/mark/${mark.id}`);
+            editingMarks.splice(markToDeleteIndex, 1);
+            editingMarks = editingMarks; // trigger reactivity
+            await fetchReporte();
+        } catch (error) {
+            console.error("Error deleting mark:", error);
+            alert("Error al eliminar marca");
+        } finally {
+            closeDeleteModal();
+        }
+    }
+
+    async function addManualMark() {
+        if (!newMarkTime) return;
+
+        // combine selectedDate and newMarkTime
+        // newMarkTime is HH:mm
+        // selectedDate is YYYY-MM-DD
+        const dateTimeStr = `${selectedDate}T${newMarkTime}:00`;
+        const dateObj = new Date(dateTimeStr);
+        const isoStr = dateObj.toISOString();
+
+        try {
+            const payload = {
+                user_id: String(editingUser.user_id),
+                timestamp: isoStr,
+            };
+            console.log("Sending manual mark payload:", payload);
+            const { data } = await api.post("/attendance/mark/manual", payload);
+            editingMarks = [
+                ...editingMarks,
+                { id: data.id, timestamp: data.timestamp },
+            ];
+            newMarkTime = "";
+            await fetchReporte();
+        } catch (error) {
+            console.error("Error adding mark:", error);
+            alert(
+                "Error al agregar marca: " +
+                    (error.response?.data?.detail || error.message),
+            );
+        }
     }
 
     $: filteredReport = reporte.filter((item) =>
@@ -132,6 +243,7 @@
                         <th class="px-6 py-4">Empleado</th>
                         <th class="px-6 py-4">Historial de Marcas</th>
                         <th class="px-6 py-4 text-center">Estado Actual</th>
+                        <th class="px-6 py-4 text-right">Acciones</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
@@ -191,8 +303,8 @@
                                                 <div
                                                     class="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium border
                                                     {i % 2 === 0
-                                                        ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-800'
-                                                        : 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-amber-100 dark:border-amber-800'}"
+                                                        ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-100 dark:border-emerald-800'
+                                                        : 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-100 dark:border-amber-800'}"
                                                 >
                                                     {#if i % 2 === 0}
                                                         <ArrowDown
@@ -205,7 +317,9 @@
                                                             strokeWidth={3}
                                                         />
                                                     {/if}
-                                                    {formatTime(marca)}
+                                                    {formatTime(
+                                                        marca.timestamp,
+                                                    )}
                                                 </div>
                                             {/each}
                                         {:else}
@@ -240,6 +354,15 @@
                                         </span>
                                     {/if}
                                 </td>
+                                <td class="px-6 py-4 text-right">
+                                    <button
+                                        on:click={() => openEditModal(row)}
+                                        class="p-2 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                                        title="Editar asistencia"
+                                    >
+                                        <Edit size={18} />
+                                    </button>
+                                </td>
                             </tr>
                         {/each}
                     {/if}
@@ -248,3 +371,179 @@
         </div>
     </div>
 </div>
+
+<!-- Edit Modal -->
+{#if showModal}
+    <div
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+    >
+        <div
+            class="w-full max-w-md rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-xl"
+        >
+            <div class="mb-6 flex items-center justify-between">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+                    Editar Asistencia
+                </h3>
+                <button
+                    on:click={closeEditModal}
+                    class="rounded-full p-1 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                >
+                    <X size={20} />
+                </button>
+            </div>
+
+            <div class="mb-6">
+                <div
+                    class="flex items-center gap-3 mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg"
+                >
+                    <div
+                        class="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-200 font-bold"
+                    >
+                        {editingUser.nombre.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                        <div class="font-medium text-gray-900 dark:text-white">
+                            {editingUser.nombre}
+                        </div>
+                        <div class="text-xs text-gray-500 mb-1">
+                            {selectedDate}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3 max-h-[300px] overflow-y-auto pr-2">
+                    {#each editingMarks as mark, i (mark.id)}
+                        <div class="flex items-center gap-2">
+                            <div class="relative flex-1">
+                                <Clock
+                                    class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                                    size={16}
+                                />
+                                <input
+                                    type="time"
+                                    value={new Date(
+                                        mark.timestamp,
+                                    ).toLocaleTimeString([], {
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                        hour12: false,
+                                    })}
+                                    on:change={(e) => {
+                                        // Update local state temporarily
+                                        const [h, m] =
+                                            e.target.value.split(":");
+                                        const d = new Date(mark.timestamp);
+                                        d.setHours(h);
+                                        d.setMinutes(m);
+                                        editingMarks[i].timestamp =
+                                            d.toISOString();
+                                    }}
+                                    class="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none"
+                                />
+                            </div>
+                            <button
+                                on:click={() => saveMarkChange(i)}
+                                class="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                                title="Guardar cambios"
+                            >
+                                <Save size={18} />
+                            </button>
+                            <button
+                                on:click={() => openDeleteModal(i)}
+                                class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                title="Eliminar marca"
+                            >
+                                <Trash2 size={18} />
+                            </button>
+                        </div>
+                    {/each}
+
+                    {#if editingMarks.length === 0}
+                        <div
+                            class="text-center py-4 text-gray-500 text-sm italic"
+                        >
+                            No hay marcas registradas este día.
+                        </div>
+                    {/if}
+                </div>
+
+                <div
+                    class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700"
+                >
+                    <label
+                        class="block text-xs font-medium text-gray-500 mb-2 uppercase"
+                        >Agregar nueva marca</label
+                    >
+                    <div class="flex gap-2">
+                        <input
+                            type="time"
+                            bind:value={newMarkTime}
+                            class="flex-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                        />
+                        <button
+                            on:click={addManualMark}
+                            disabled={!newMarkTime}
+                            class="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                            <Plus size={16} />
+                            Agregar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end">
+                <button
+                    on:click={closeEditModal}
+                    class="rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                >
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+{/if}
+
+<!-- Delete Confirmation Modal -->
+{#if showDeleteModal}
+    <div class="fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <div
+            class="absolute inset-0 bg-gray-900/50 dark:bg-black/60 backdrop-blur-sm transition-opacity"
+            on:click={closeDeleteModal}
+        ></div>
+        <div
+            class="relative w-full max-w-sm rounded-xl bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700 p-6"
+        >
+            <div class="flex flex-col items-center text-center gap-4">
+                <div
+                    class="h-12 w-12 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-600 dark:text-red-400"
+                >
+                    <AlertTriangle size={24} />
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+                        Confirmar eliminación
+                    </h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        ¿Estás seguro de que quieres eliminar esta marca? Esta
+                        acción es irreversible.
+                    </p>
+                </div>
+                <div class="flex gap-3 w-full mt-2">
+                    <button
+                        on:click={closeDeleteModal}
+                        class="flex-1 rounded-lg border border-gray-200 dark:border-gray-600 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700"
+                    >
+                        Cancelar
+                    </button>
+                    <button
+                        on:click={confirmDelete}
+                        class="flex-1 rounded-lg bg-red-600 py-2.5 text-sm font-medium text-white hover:bg-red-700 shadow-sm"
+                    >
+                        Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{/if}

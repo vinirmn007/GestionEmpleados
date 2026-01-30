@@ -58,6 +58,7 @@ class Payroll(Base):
     total_deductions = Column(Float, nullable=False)
     
     # Liquido a recibir
+    bank_account = Column(String(50), nullable=True) # Snapshot de cuenta bancaria
     net_salary = Column(Float, nullable=False) # Lo que llega al banco
     
     # Auditoría y Estado

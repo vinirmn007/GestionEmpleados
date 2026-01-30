@@ -26,12 +26,15 @@ async def get_current_user(authorization: str = Header(...)):
     return payload
 
 
-def require_role(role: str):
+def require_role(role: str, auto_error: bool = True):
     async def role_dependency(payload: dict = Depends(get_current_user)):
         user_roles = payload.get("roles", [])
         if role not in user_roles:
-            raise HTTPException(
-                status_code=403, detail=f"Se requiere rol '{role}' para acceder a este recurso"
-            )
+            if auto_error:
+                raise HTTPException(
+                    status_code=403, detail=f"Se requiere rol '{role}' para acceder a este recurso"
+                )
+            else:
+                return None
         return payload
     return role_dependency

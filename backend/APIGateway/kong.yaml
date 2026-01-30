@@ -48,6 +48,6 @@ routes:
 - name: reports-route
   service: reports-service
   paths:
-  - /reportes
-  strip_path: true
+  - /reports
+  strip_path: false
 

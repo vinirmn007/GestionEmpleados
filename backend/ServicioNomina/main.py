@@ -26,7 +26,7 @@ app.add_middleware(
 
 is_manager = Depends(require_role("gerente"))
 
-URL_REPORTES = os.getenv("URL_REPORTES", "http://servicio-reportes-y-calculos:8000")
+URL_REPORTES = os.getenv("URL_REPORTES", "http://servicio-reportes:9005")
 
 #CRUD PARA GESTIONAR STATUS O CARGOS
 @app.post(
@@ -147,7 +147,21 @@ async def generate_payroll(
         except Exception as e:
             raise HTTPException(status_code=502, detail=f"Fallo de conexión con Reportes: {e}")
 
-    gross_salary = report_data.get("estimated_gross_pay", 0.0)
+    # PREPARAR DATOS (reporte + overrides)
+    overrides = request.override_data or {}
+    
+    # Prioridad: Override > Reporte
+    gross_salary = overrides.get("estimated_gross_pay") 
+    if gross_salary is None:
+         gross_salary = report_data.get("estimated_gross_pay", 0.0)
+         
+    regular_hours = overrides.get("total_regular_hours")
+    if regular_hours is None:
+        regular_hours = report_data.get("total_regular_hours")
+        
+    overtime_hours = overrides.get("total_overtime_hours")
+    if overtime_hours is None:
+        overtime_hours = report_data.get("total_overtime_hours")
     
     #APLICAR DEDUCCIONES
     iess_rule = db.query(models.DeductionRule).filter(
@@ -183,12 +197,14 @@ async def generate_payroll(
         month=request.month,
         year=request.year,
         
-        regular_hours=report_data.get("total_regular_hours"),
-        overtime_hours=report_data.get("total_overtime_hours"),
+        regular_hours=regular_hours,
+        overtime_hours=overtime_hours,
         
         gross_salary=gross_salary,
         iess_deduction=iess_value,
         total_deductions=total_deductions,
+        
+        bank_account=report_data.get("bank_account"),
         net_salary=net_salary,
         
         status=models.PayrollStatus.BORRADOR,

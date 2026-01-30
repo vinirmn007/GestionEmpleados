@@ -35,6 +35,7 @@ def create_user(db, usuario: UsuarioCreate):
         activo=True,
         rol=usuario.rol,
         job_status_id=usuario.job_status_id,
+        numero_cuenta=usuario.numero_cuenta,
     )
     db.add(db_user)
     db.commit()

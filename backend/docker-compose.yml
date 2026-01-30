@@ -66,6 +66,7 @@ services:
     build:
       context: ./ServicioAutenticacion
     container_name: servicio-autenticacion
+    restart: always
     networks:
       - sge-network
     environment:
@@ -75,6 +76,9 @@ services:
       DB_PASSWORD: "12345"
       DB_NAME: "servicio_usuarios"
       USER_SERVICE_URL: "http://servicio-usuarios:9001"
+    volumes:
+      - ./ServicioAutenticacion:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 9000 --reload
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/docs"]
       interval: 5s
@@ -87,6 +91,7 @@ services:
     build:
       context: ./ServicioUsuarios
     container_name: servicio-usuarios
+    restart: always
     depends_on:
       db-sge:
         condition: service_healthy
@@ -96,6 +101,9 @@ services:
       DB_USER: "fastapi_user"
       DB_PASSWORD: "12345"
       DB_NAME: "servicio_usuarios"
+    volumes:
+      - ./ServicioUsuarios:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 9001 --reload
     networks:
       - sge-network
     healthcheck:
@@ -110,6 +118,7 @@ services:
     build:
       context: ./ServicioAsistencia
     container_name: servicio-asistencia
+    restart: always
     depends_on:
       db-sge:
         condition: service_healthy
@@ -119,6 +128,9 @@ services:
       DB_USER: "fastapi_user"
       DB_PASSWORD: "12345"
       DB_NAME: "servicio_usuarios"
+    volumes:
+      - ./ServicioAsistencia:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 9002 --reload
     networks:
       - sge-network
     healthcheck:
@@ -133,6 +145,7 @@ services:
     build:
       context: ./ServicioHorarios
     container_name: servicio-horarios
+    restart: always
     depends_on:
       servicio-usuarios:
         condition: service_healthy
@@ -142,6 +155,9 @@ services:
       DB_USER: "fastapi_user"
       DB_PASSWORD: "12345"
       DB_NAME: "servicio_usuarios"
+    volumes:
+      - ./ServicioHorarios:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 9003 --reload
     networks:
       - sge-network
     healthcheck:
@@ -156,6 +172,7 @@ services:
     build:
       context: ./ServicioNomina
     container_name: servicio-nomina
+    restart: always
     depends_on:
       db-sge:
         condition: service_healthy
@@ -166,6 +183,9 @@ services:
       DB_USER: "fastapi_user"
       DB_PASSWORD: "12345"
       DB_NAME: "servicio_usuarios"
+    volumes:
+      - ./ServicioNomina:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 9004 --reload
     networks:
       - sge-network
     healthcheck:
@@ -180,10 +200,14 @@ services:
     build:
       context: ./ServicioReportes
     container_name: servicio-reportes
+    restart: always
     environment:
       URL_USUARIOS: "http://servicio-usuarios:9001"
       URL_ASISTENCIA: "http://servicio-asistencia:9002"
       URL_NOMINA: "http://servicio-nomina:9004"
+    volumes:
+      - ./ServicioReportes:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 9005 --reload
     networks:
       - sge-network
     healthcheck:

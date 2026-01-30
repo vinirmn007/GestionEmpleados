@@ -12,3 +12,10 @@ class MarkStatusResponse(BaseModel):
     new_mark: MarkResponse
     current_status: str
     todays_marks: int
+
+class MarkUpdate(BaseModel):
+    timestamp: datetime
+
+class MarkCreateManual(BaseModel):
+    user_id: str
+    timestamp: datetime

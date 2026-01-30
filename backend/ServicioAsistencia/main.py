@@ -18,7 +18,7 @@ app = FastAPI(title="Servicio de Asistencia")
 #CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:8000", "http://127.0.0.1:5173", "*"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -29,8 +29,15 @@ is_manager = Depends(require_role("gerente"))
 
 USUARIOS_SERVICE_URL = "http://servicio-usuarios:9001"
 
+async def get_current_user_multi_role(payload_empl: dict = Depends(require_role("empleado", auto_error=False)), payload_mgr: dict = Depends(require_role("gerente", auto_error=False))):
+    if payload_empl:
+        return payload_empl
+    if payload_mgr:
+        return payload_mgr
+    raise HTTPException(status_code=401, detail="Se requiere rol de Empleado o Gerente")
+
 @app.post("/attendance/mark", response_model=mark_schema.MarkStatusResponse, tags=["Asistencia (Empleado)"])
-async def create_new_mark(db: Annotated[Session, Depends(get_db)],payload: Annotated[dict, is_employee]):
+async def create_new_mark(db: Annotated[Session, Depends(get_db)], payload: dict = Depends(get_current_user_multi_role)):
     user_id = payload.get("sub")
     timestamp = datetime.now(timezone.utc)
 
@@ -64,6 +71,38 @@ async def create_new_mark_test(db: Annotated[Session, Depends(get_db)], user_id:
         todays_marks=mark_count
     )
 
+@app.post("/attendance/mark/manual", response_model=mark_schema.MarkResponse, tags=["Asistencia (Gerente)"])
+async def create_manual_mark(
+    mark_data: mark_schema.MarkCreateManual,
+    db: Annotated[Session, Depends(get_db)],
+    payload: dict = Depends(require_role("gerente"))
+):
+    new_mark = crud.create_mark(db, mark_data.user_id, mark_data.timestamp)
+    return new_mark
+
+@app.put("/attendance/mark/{mark_id}", response_model=mark_schema.MarkResponse, tags=["Asistencia (Gerente)"])
+async def update_mark(
+    mark_id: int,
+    mark_data: mark_schema.MarkUpdate,
+    db: Annotated[Session, Depends(get_db)],
+    payload: dict = Depends(require_role("gerente"))
+):
+    updated_mark = crud.update_mark(db, mark_id, mark_data.timestamp)
+    if not updated_mark:
+        raise HTTPException(status_code=404, detail="Marca no encontrada")
+    return updated_mark
+
+@app.delete("/attendance/mark/{mark_id}", tags=["Asistencia (Gerente)"])
+async def delete_mark(
+    mark_id: int,
+    db: Annotated[Session, Depends(get_db)],
+    payload: dict = Depends(require_role("gerente"))
+):
+    success = crud.delete_mark(db, mark_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Marca no encontrada")
+    return {"message": "Marca eliminada correctamente"}
+
 @app.get(
     "/attendance/history",
     response_model=List[mark_schema.MarkResponse],
@@ -71,13 +110,20 @@ async def create_new_mark_test(db: Annotated[Session, Depends(get_db)], user_id:
 )
 async def get_attendance_history(
     user_id: str,
-    target_date: date,
     db: Annotated[Session, Depends(get_db)],
-    payload: Annotated[dict, is_manager]
+    payload: Annotated[dict, is_manager],
+    target_date: date = None,
+    start_date: date = None,
+    end_date: date = None
 ):
     #validar que el gerente tenga permisos sobre ese usuario
-    marks = crud.get_marks_for_day(db, user_id, target_date)
-    return marks
+    if start_date and end_date:
+        return crud.get_marks_in_range(db, user_id, start_date, end_date)
+    
+    if target_date:
+        return crud.get_marks_for_day(db, user_id, target_date)
+        
+    raise HTTPException(status_code=400, detail="Debe proporcionar target_date O (start_date y end_date)")
 
 
 @app.get("/attendance/reporte", response_model=list)
@@ -117,7 +163,7 @@ async def obtener_reporte_diario(
         fila = {
             "user_id": usuario["id"],
             "nombre": usuario["nombre"],
-            "marcas": [m.timestamp for m in marcas], # Opcional: serializar marcas
+            "marcas": [{"id": m.id, "timestamp": m.timestamp} for m in marcas], 
             "estado": estado
         }
         reporte_final.append(fila)

@@ -15,6 +15,7 @@ class UsuarioBase(BaseModel):
     direccion: str
     rol: RolEnum  = RolEnum.empleado
     job_status_id: int | None = None
+    numero_cuenta: str | None = None
 
 class UsuarioCreate(UsuarioBase):
     password: str
@@ -27,10 +28,12 @@ class UsuarioUpdate(BaseModel):
     rol: RolEnum | None = None
     activo: bool | None = None
     job_status_id: int | None = None
+    numero_cuenta: str | None = None
 
 class UsuarioRead(UsuarioBase):
     id: int
     activo: bool
+    numero_cuenta: str | None = None
 
     class Config:
         from_attributes = True

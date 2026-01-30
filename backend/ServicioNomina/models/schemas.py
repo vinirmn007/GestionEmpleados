@@ -53,6 +53,7 @@ class PayrollGenerationRequest(BaseModel):
     user_id: str
     month: int
     year: int
+    override_data: Optional[dict] = None
 
 class PayrollResponse(BaseModel):
     id: int
@@ -63,6 +64,7 @@ class PayrollResponse(BaseModel):
     gross_salary: float
     total_deductions: float
     net_salary: float
+    bank_account: str | None = None
     status: str
     
     generated_at: datetime

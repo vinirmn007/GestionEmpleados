@@ -16,3 +16,4 @@ class Usuario(Base):
     activo = Column(Boolean, default=True)
     rol = Column(SqlEnum(RolEnum), nullable=False, default=RolEnum.empleado) 
     job_status_id = Column(Integer, nullable=True)
+    numero_cuenta = Column(String(50), nullable=True)
