@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query, Header
 from sqlalchemy.orm import Session
 from typing import List
 from database import SessionLocal
-from schemas.usuario import UserRequest, UsuarioCreate, UsuarioRead, UserRolesResponse, UserIdResponse , PaginatedUsuarios
+from schemas.usuario import UserRequest, UsuarioCreate, UsuarioRead, UserRolesResponse, UserIdResponse , PaginatedUsuarios, UsuarioUpdate
 from models.usuario_model import Usuario
 from crud.usuarioCrud import *
 from utils.verify_roles import require_role
@@ -65,15 +65,15 @@ def obtener_usuario(user_id: int, db: Session = Depends(get_db)):
 
 
 @router.put("/update/{user_id}", response_model=UsuarioRead)
-def actualizar_usuario(user_id: int, usuario: UsuarioCreate, db: Session = Depends(get_db)):
+def actualizar_usuario(user_id: int, usuario: UsuarioUpdate, db: Session = Depends(get_db)):
     existente = get_user(db, user_id)
     if not existente:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
-    actualizado = update_user(
-        db, user_id,
-        nombre=usuario.nombre,
-        correo=usuario.correo
-    )
+    
+    # Filtrar solo los campos que vienen en el request (excluir None)
+    update_data = usuario.dict(exclude_unset=True)
+    
+    actualizado = update_user(db, user_id, **update_data)
     return actualizado
 
 

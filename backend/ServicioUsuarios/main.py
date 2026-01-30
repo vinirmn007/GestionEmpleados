@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+# Trigger reload
 from database import Base, engine
 from routes.usuario_router import router as usuario_router
 from fastapi.middleware.cors import CORSMiddleware

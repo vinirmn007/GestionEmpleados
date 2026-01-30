@@ -19,6 +19,15 @@ class UsuarioBase(BaseModel):
 class UsuarioCreate(UsuarioBase):
     password: str
 
+class UsuarioUpdate(BaseModel):
+    nombre: str | None = None
+    correo: EmailStr | None = None
+    celular: str | None = None
+    direccion: str | None = None
+    rol: RolEnum | None = None
+    activo: bool | None = None
+    job_status_id: int | None = None
+
 class UsuarioRead(UsuarioBase):
     id: int
     activo: bool
