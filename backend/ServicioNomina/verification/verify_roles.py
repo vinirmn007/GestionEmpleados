@@ -30,10 +30,21 @@ async def get_current_user(authorization: str = Header(None)):
 
 def require_role(role: str):
     async def role_dependency(payload: dict = Depends(get_current_user)):
-        user_roles = payload.get("roles", [])
-        if role not in user_roles:
-            raise HTTPException(
-                status_code=403, detail=f"Se requiere rol '{role}' para acceder a este recurso"
-            )
+        user_roles = payload.get("roles")
+        
+        # Manejar caso donde el rol viene como string único o lista
+        if isinstance(user_roles, str):
+            if user_roles != role:
+                 raise HTTPException(
+                    status_code=403, detail=f"Se requiere rol '{role}' para acceder a este recurso. Rol actual: {user_roles}"
+                )
+        elif isinstance(user_roles, list):
+            if role not in user_roles:
+                raise HTTPException(
+                    status_code=403, detail=f"Se requiere rol '{role}' para acceder a este recurso"
+                )
+        else:
+             raise HTTPException(status_code=403, detail="Roles insuficientes o mal formados")
+             
         return payload
     return role_dependency

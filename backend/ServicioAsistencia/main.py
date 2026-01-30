@@ -24,8 +24,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-is_employee = Depends(require_role("Empleado"))
-is_manager = Depends(require_role("Gerente"))
+is_employee = Depends(require_role("empleado"))
+is_manager = Depends(require_role("gerente"))
 
 USUARIOS_SERVICE_URL = "http://servicio-usuarios:9001"
 

@@ -24,7 +24,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-is_manager = Depends(require_role("Gerente"))
+is_manager = Depends(require_role("gerente"))
 
 URL_REPORTES = os.getenv("URL_REPORTES", "http://servicio-reportes-y-calculos:8000")
 

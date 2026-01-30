@@ -1,10 +1,17 @@
 <script>
+    import { onMount } from "svelte";
     import api from "$lib/utils/api";
     import { ArrowLeft, Save, Loader2 } from "lucide-svelte";
 
     let loading = false;
     let error = "";
     let success = "";
+
+    let jobStatuses = [];
+    let roles = [
+        { value: "empleado", label: "Empleado" },
+        { value: "gerente", label: "Gerente" },
+    ];
 
     let formData = {
         nombre: "",
@@ -13,7 +20,21 @@
         celular: "",
         direccion: "",
         password: "",
+        rol: "empleado",
+        job_status_id: "",
     };
+
+    onMount(async () => {
+        try {
+            const { data } = await api.get("/nomina/statuses");
+            jobStatuses = data;
+            if (jobStatuses.length > 0) {
+                formData.job_status_id = jobStatuses[0].id;
+            }
+        } catch (e) {
+            console.error("Error cargando statuses", e);
+        }
+    });
 
     async function handleSubmit() {
         loading = true;
@@ -32,6 +53,8 @@
                 celular: "",
                 direccion: "",
                 password: "",
+                rol: "empleado",
+                job_status_id: jobStatuses.length > 0 ? jobStatuses[0].id : "",
             };
 
             setTimeout(() => {
@@ -155,6 +178,44 @@
                     placeholder="09xxxxxxxx"
                     class="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 p-2.5 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
                 />
+            </div>
+
+            <div class="md:col-span-2 grid md:grid-cols-2 gap-6">
+                <div>
+                    <label
+                        for="rol"
+                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-200"
+                        >Rol de Usuario</label
+                    >
+                    <select
+                        id="rol"
+                        bind:value={formData.rol}
+                        class="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 p-2.5 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
+                    >
+                        {#each roles as role}
+                            <option value={role.value}>{role.label}</option>
+                        {/each}
+                    </select>
+                </div>
+                <div>
+                    <label
+                        for="status"
+                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-200"
+                        >Cargo / Status</label
+                    >
+                    <select
+                        id="status"
+                        bind:value={formData.job_status_id}
+                        required
+                        class="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 p-2.5 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
+                    >
+                        <option value="" disabled>Seleccione un cargo...</option
+                        >
+                        {#each jobStatuses as status}
+                            <option value={status.id}>{status.name}</option>
+                        {/each}
+                    </select>
+                </div>
             </div>
 
             <div class="md:col-span-2">

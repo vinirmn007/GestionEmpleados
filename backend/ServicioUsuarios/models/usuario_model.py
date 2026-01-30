@@ -14,5 +14,5 @@ class Usuario(Base):
     direccion = Column(String(250), nullable=False)
     hashed_password = Column(String(256), nullable=False)
     activo = Column(Boolean, default=True)
-    rol = Column(SqlEnum(RolEnum), default=RolEnum.empleado) 
-    job_status_id = Column(Integer, nullable=True) 
+    rol = Column(SqlEnum(RolEnum), nullable=False, default=RolEnum.empleado) 
+    job_status_id = Column(Integer, nullable=True)

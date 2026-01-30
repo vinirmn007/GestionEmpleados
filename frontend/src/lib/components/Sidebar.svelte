@@ -158,6 +158,17 @@
             <Settings size={20} />
             <span>Configuración</span>
         </a>
+
+        <a
+            href="/status"
+            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
+           {isActive('/status')
+                ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'}"
+        >
+            <Briefcase size={20} />
+            <span>Gestión de Status</span>
+        </a>
     </nav>
 
     <div class="border-t border-gray-200 dark:border-gray-700 p-4">
