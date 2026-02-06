@@ -7,6 +7,7 @@ from database import Base, engine, get_db
 from models.horario_model import Horario
 from schemas.horario_schema import HorarioCreate, HorarioResponse, HorarioBase
 from crud.horario_crud import create_horario, get_horarios_by_user, update_horario, delete_horario
+from verification.verify_roles import require_role
 import requests
 import os
 
@@ -58,6 +59,18 @@ def get_user_schedule(user_id: int, db: Session = Depends(get_db)):
     Obtiene todos los horarios asignados a un usuario.
     """
     validar_usuario(user_id)
+    return get_horarios_by_user(db, user_id)
+
+
+@app.get("/schedules/me", response_model=List[HorarioResponse], tags=["Horarios"])
+def get_my_schedule(
+    db: Session = Depends(get_db),
+    payload: dict = Depends(require_role("empleado"))
+):
+    """
+    Obtiene el horario del usuario autenticado.
+    """
+    user_id = int(payload.get("sub"))
     return get_horarios_by_user(db, user_id)
 
 

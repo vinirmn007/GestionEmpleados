@@ -54,6 +54,23 @@ async def create_new_mark(db: Annotated[Session, Depends(get_db)], payload: dict
         todays_marks=mark_count
     )
 
+@app.get("/attendance/me", response_model=List[mark_schema.MarkResponse], tags=["Asistencia (Empleado)"])
+async def get_my_attendance_history(
+    db: Annotated[Session, Depends(get_db)],
+    payload: dict = Depends(require_role("empleado")),
+    start_date: date = None,
+    end_date: date = None
+):
+    user_id = payload.get("sub")
+    
+    # Default: Last 30 days if not provided
+    if not start_date:
+        start_date = (datetime.now() - timedelta(days=30)).date()
+    if not end_date:
+        end_date = datetime.now().date()
+        
+    return crud.get_marks_in_range(db, user_id, start_date, end_date)
+
 @app.post("/attendance/mark/test", response_model=mark_schema.MarkStatusResponse, tags=["Asistencia (Empleado)"])
 async def create_new_mark_test(db: Annotated[Session, Depends(get_db)], user_id: str):
     timestamp = datetime.now(timezone.utc)

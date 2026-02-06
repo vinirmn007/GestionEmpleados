@@ -37,6 +37,18 @@ class DashboardScreen extends StatelessWidget {
             label: 'Historial',
           ),
           NavigationDestination(
+            icon: Icon(Icons.calendar_month_outlined),
+            selectedIcon:
+                Icon(Icons.calendar_month, color: AppTheme.primaryColor),
+            label: 'Horario',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.attach_money_outlined),
+            selectedIcon:
+                Icon(Icons.attach_money, color: AppTheme.primaryColor),
+            label: 'Roles',
+          ),
+          NavigationDestination(
             icon: Icon(Icons.person_outline),
             selectedIcon: Icon(Icons.person, color: AppTheme.primaryColor),
             label: 'Perfil',

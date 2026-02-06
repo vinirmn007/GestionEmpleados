@@ -68,3 +68,6 @@ def update_deduction_rule(db: Session, rule_id: int, update_data: schemas.Deduct
     db.commit()
     db.refresh(db_rule)
     return db_rule
+
+def get_payrolls_by_user(db: Session, user_id: int, skip: int = 0, limit: int = 100):
+   return db.query(models.Payroll).filter(models.Payroll.user_id == user_id).order_by(models.Payroll.year.desc(), models.Payroll.month.desc()).offset(skip).limit(limit).all()

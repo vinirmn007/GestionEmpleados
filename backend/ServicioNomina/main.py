@@ -263,3 +263,13 @@ async def update_deduction_rule(
     if not updated_rule:
         raise HTTPException(status_code=404, detail="Regla de deducción no encontrada")
     return updated_rule
+
+@app.get("/payrolls/me", response_model=List[schemas.PayrollResponse], tags=["Nómina (Empleado)"])
+async def get_my_payrolls(
+    db: Annotated[Session, Depends(get_db)],
+    payload: dict = Depends(require_role("empleado")),
+    skip: int = 0,
+    limit: int = 100
+):
+    user_id = int(payload.get("sub"))
+    return crud.get_payrolls_by_user(db, user_id, skip, limit)

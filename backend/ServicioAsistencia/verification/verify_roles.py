@@ -29,10 +29,22 @@ async def get_current_user(authorization: str = Header(...)):
 def require_role(role: str, auto_error: bool = True):
     async def role_dependency(payload: dict = Depends(get_current_user)):
         user_roles = payload.get("roles", [])
+        
+        # Normalize to list if string
+        if isinstance(user_roles, str):
+            user_roles = [user_roles]
+
+        print(f"DEBUG ROLE CHECK: User Roles: {user_roles}, Required: {role}")
+
+        # Hierarchy: Gerente has all permissions of Empleado
+        if role == "empleado" and "gerente" in user_roles:
+            return payload
+
         if role not in user_roles:
+            print(f"DEBUG: Role '{role}' NOT found in {user_roles}")
             if auto_error:
                 raise HTTPException(
-                    status_code=403, detail=f"Se requiere rol '{role}' para acceder a este recurso"
+                    status_code=403, detail=f"Se requiere rol '{role}' para acceder a este recurso. Roles actuales: {user_roles}"
                 )
             else:
                 return None

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/app_theme.dart';
 import '../providers/auth_provider.dart';
+import '../../data/services/attendance_service.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -10,7 +11,7 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<AuthProvider>().user;
-    final userName = user?.firstName ?? "Usuario";
+    final userName = user?.name ?? "Usuario";
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -34,8 +35,12 @@ class HomeView extends StatelessWidget {
                   ],
                 ),
                 IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.notifications),
+                  onPressed: () {
+                    context.read<AuthProvider>().logout();
+                    context.go('/login');
+                  },
+                  icon: const Icon(Icons.logout),
+                  tooltip: 'Cerrar Sesión',
                 )
               ],
             ),
@@ -43,9 +48,9 @@ class HomeView extends StatelessWidget {
             Text(
               "¡Hola, $userName!",
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppTheme.textColor,
-              ),
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.textColor,
+                  ),
             ),
             const SizedBox(height: 24),
 
@@ -67,7 +72,11 @@ class HomeView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("ESTADO ACTUAL", style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey)),
+                  Text("ESTADO ACTUAL",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(color: Colors.grey)),
                   const SizedBox(height: 4),
                   const Text(
                     "FUERA",
@@ -78,7 +87,8 @@ class HomeView extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  const Text("No has marcado entrada hoy", style: TextStyle(color: AppTheme.subtitleColor)),
+                  const Text("No has marcado entrada hoy",
+                      style: TextStyle(color: AppTheme.subtitleColor)),
                 ],
               ),
             ),
@@ -99,7 +109,31 @@ class HomeView extends StatelessWidget {
                   title: "Registrar\nMarcación",
                   color: AppTheme.primaryColor,
                   isPrimary: true,
-                  onTap: () => context.go('/mark_attendance'),
+                  onTap: () async {
+                    try {
+                      final result = await context
+                          .read<AttendanceService>()
+                          .markAttendance();
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                "Marcación exitosa: ${result['current_status']} (${result['new_mark']['timestamp']})"),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                        // Optional: Refresh history or status if needed
+                      }
+                    } catch (e) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text("Error: $e"),
+                              backgroundColor: Colors.red),
+                        );
+                      }
+                    }
+                  },
                 ),
                 _buildMenuCard(
                   context,
@@ -112,21 +146,22 @@ class HomeView extends StatelessWidget {
                   icon: Icons.receipt_long,
                   title: "Roles de\nPago",
                   iconColor: Colors.blueAccent,
-                  onTap: () {},
+                  onTap: () => context.go('/payrolls'),
                 ),
                 _buildMenuCard(
                   context,
-                  icon: Icons.calendar_today, // Permission icon in proto is calendar check
+                  icon: Icons
+                      .calendar_today, // Permission icon in proto is calendar check
                   title: "Solicitud de\nPermiso",
                   iconColor: Colors.blueAccent,
-                  onTap: () {},
+                  onTap: () {}, // Still placeholder
                 ),
                 _buildMenuCard(
                   context,
                   icon: Icons.schedule,
                   title: "Horarios\nAsignados",
                   iconColor: Colors.blueAccent,
-                  onTap: () {},
+                  onTap: () => context.go('/schedules'),
                 ),
                 _buildMenuCard(
                   context,
@@ -174,7 +209,9 @@ class HomeView extends StatelessWidget {
             Icon(
               icon,
               size: 32,
-              color: isPrimary ? Colors.white : (iconColor ?? AppTheme.primaryColor),
+              color: isPrimary
+                  ? Colors.white
+                  : (iconColor ?? AppTheme.primaryColor),
             ),
             Text(
               title,

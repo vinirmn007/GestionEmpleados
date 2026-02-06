@@ -1,10 +1,10 @@
+
 from fastapi import Depends, HTTPException, Header
 import jwt
 from .settings import settings
 
 SECRET_KEY = settings.AUTHJWT_SECRET_KEY
 ALGORITHM = "HS256"
-
 
 def decode_jwt(token: str):
     try:
@@ -15,10 +15,9 @@ def decode_jwt(token: str):
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Token inválido")
 
-
 async def get_current_user(authorization: str = Header(None)):
     if not authorization:
-        raise HTTPException(status_code=401, detail="No se proporcionó token de autenticación")
+         raise HTTPException(status_code=401, detail="No se proporcionó token de autenticación")
 
     if not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Encabezado Authorization inválido")
@@ -27,23 +26,18 @@ async def get_current_user(authorization: str = Header(None)):
     payload = decode_jwt(token)
     return payload
 
-
 def require_role(role: str):
     async def role_dependency(payload: dict = Depends(get_current_user)):
         user_roles = payload.get("roles")
-        
-        # Manejar caso donde el rol viene como string único o lista
+        # Normalize to list if string
         if isinstance(user_roles, str):
             user_roles = [user_roles]
-            
+
         # Hierarchy: Gerente has all permissions of Empleado
         if role == "empleado" and "gerente" in user_roles:
             return payload
 
         if role not in user_roles:
-             raise HTTPException(
-                status_code=403, detail=f"Se requiere rol '{role}' para acceder a este recurso. Roles actuales: {user_roles}"
-            )
-             
+            raise HTTPException(status_code=403, detail=f"Se requiere rol '{role}' para acceder a este recurso")
         return payload
     return role_dependency

@@ -155,6 +155,7 @@ services:
       DB_USER: "fastapi_user"
       DB_PASSWORD: "12345"
       DB_NAME: "servicio_usuarios"
+      AUTHJWT_SECRET_KEY: "alexisjosue12345"
     volumes:
       - ./ServicioHorarios:/app
     command: uvicorn main:app --host 0.0.0.0 --port 9003 --reload

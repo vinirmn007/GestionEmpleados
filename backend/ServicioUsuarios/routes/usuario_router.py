@@ -5,7 +5,7 @@ from database import SessionLocal
 from schemas.usuario import UserRequest, UsuarioCreate, UsuarioRead, UserRolesResponse, UserIdResponse , PaginatedUsuarios, UsuarioUpdate
 from models.usuario_model import Usuario
 from crud.usuarioCrud import *
-from utils.verify_roles import require_role
+from utils.verify_roles import require_role, get_current_user
 
 
 router = APIRouter(
@@ -57,6 +57,14 @@ def listar_usuarios_pag(
 
 @router.get("/get/{user_id}", response_model=UsuarioRead)
 def obtener_usuario(user_id: int, db: Session = Depends(get_db)):
+    usuario = get_user(db, user_id)
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    return usuario
+
+@router.get("/me", response_model=UsuarioRead)
+def get_my_profile(current_user: dict = Depends(get_current_user), db: Session = Depends(get_db)):
+    user_id = int(current_user["sub"])
     usuario = get_user(db, user_id)
     if not usuario:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")

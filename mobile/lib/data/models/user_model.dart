@@ -1,37 +1,36 @@
 class User {
   final String id;
-  final String username;
-  final String firstName;
-  final String lastName;
+  final String name;
   final String email;
+  final String dni;
+  final String role;
 
   User({
     required this.id,
-    required this.username,
-    required this.firstName,
-    required this.lastName,
+    required this.name,
     required this.email,
+    required this.dni,
+    required this.role,
   });
 
-  String get fullName => '$firstName $lastName';
-
   factory User.fromJson(Map<String, dynamic> json) {
+    print("DEBUG: Parsing User from JSON: $json");
     return User(
       id: json['id']?.toString() ?? '',
-      username: json['username'] ?? '',
-      firstName: json['nombre'] ?? '', // Adjust key based on actual API
-      lastName: json['apellido'] ?? '', // Adjust key based on actual API
-      email: json['email'] ?? '',
+      name: json['nombre'] ?? '',
+      email: json['correo'] ?? '',
+      dni: json['dni'] ?? '',
+      role: json['rol'] ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'username': username,
-      'nombre': firstName,
-      'apellido': lastName,
-      'email': email,
+      'nombre': name,
+      'correo': email,
+      'dni': dni,
+      'rol': role,
     };
   }
 }

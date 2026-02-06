@@ -42,21 +42,17 @@ def require_role(role: str):
                 status_code=403, detail="El token no contiene roles"
             )
 
-        # Si user_roles es un string (como en este caso "gerente"), lo comparamos directamente
+        # Normalize to list if string
         if isinstance(user_roles, str):
-            if user_roles != role:
-                 raise HTTPException(
-                    status_code=403, detail=f"Se requiere rol '{role}' para acceder a este recurso"
-                )
-        # Si fuera una lista, verificamos pertenencia (futura compatibilidad)
-        elif isinstance(user_roles, list):
-            if role not in user_roles:
-                 raise HTTPException(
-                    status_code=403, detail=f"Se requiere rol '{role}' para acceder a este recurso"
-                )
-        else:
+            user_roles = [user_roles]
+
+        # Hierarchy: Gerente has all permissions of Empleado
+        if role == "empleado" and "gerente" in user_roles:
+            return payload
+
+        if role not in user_roles:
              raise HTTPException(
-                status_code=403, detail="Formato de roles inválido en el token"
+                status_code=403, detail=f"Se requiere rol '{role}' para acceder a este recurso"
             )
             
         return payload
