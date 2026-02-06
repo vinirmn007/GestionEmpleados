@@ -1,7 +1,7 @@
 # Sistema de Gestión de Empleados
 
 **Carrera de Computación | UNL**
-**Computación Ubicua**
+**Computación**
 
 ## Grupo 8
 - Josue Torres

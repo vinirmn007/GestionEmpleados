@@ -1,0 +1,116 @@
+---
+title: "Manual de Usuario - Sistema de Gestión de Empleados"
+author: "Grupo 8: Josue Torres, Alexis Roman"
+date: today
+format:
+  html:
+    toc: true
+    number-sections: true
+    theme: journal
+  pdf:
+    toc: true
+    number-sections: true
+    colorlinks: true
+    papersize: a4
+    fig-dpi: 300
+    geometry:
+      - top=20mm
+      - bottom=20mm
+      - left=20mm
+      - right=20mm
+---
+
+# Introducción
+
+Bienvenido al manual de usuario del Sistema de Gestión de Empleados. Este documento le guiará en el uso de las herramientas disponibles tanto en la aplicación móvil como en el portal web.
+
+# Descarga e Instalación de la App
+
+Para comenzar a utilizar el sistema en su dispositivo móvil, debe descargar e instalar la aplicación para Android.
+
+## Requisitos
+- Dispositivo Android con versión 6.0 o superior.
+- Permiso habilitado para instalar aplicaciones de **orígenes desconocidos** (necesario ya que la app es de uso interno y no está en la Play Store).
+
+## Pasos de Instalación
+1.  **Localizar el instalador**: El archivo instalador `app-release.apk` se encuentra en el directorio raíz del proyecto entregado.
+2.  **Transferir al móvil**: Si tiene el archivo en su computadora, transfiéralo a su teléfono mediante cable USB, correo electrónico o servicio de nube.
+3.  **Instalar**:
+    - Abra la aplicación de "Archivos" o "Descargas" en su teléfono.
+    - Toque el archivo `app-release.apk`.
+    - Si el sistema le pregunta, seleccione **"Configuración"** y active el permiso para instalar aplicaciones de esta fuente.
+    - Pulse **"Instalar"** y espere a que finalice el proceso.
+4.  **Abrir**: Una vez instalada, busque el icono de "Gestión de Empleados" en su menú de aplicaciones.
+
+# Aplicación Móvil (Empleados)
+
+La aplicación móvil está diseñada para que usted, como empleado, pueda registrar su asistencia y consultar su información laboral de manera rápida y sencilla.
+
+## Inicio de Sesión
+1.  Abra la aplicación en su dispositivo Android.
+2.  Ingrese su **Correo Electrónico** y **Contraseña**.
+3.  Pulse el botón **"Iniciar Sesión"**.
+4.  **Biometría**: Si su dispositivo lo soporta, podrá activar el inicio de sesión con huella dactilar para futuros accesos.
+
+## Pantalla Principal
+En la pantalla de inicio verá:
+- Un saludo personalizado.
+- Su estado actual (Dentro/Fuera).
+- Accesos rápidos a las funciones principales.
+
+## Registrar Asistencia
+Para marcar su entrada o salida:
+1.  En el menú principal, toque el botón grande **"Registrar Marcación"**.
+2.  El sistema validará su solicitud.
+3.  Recibirá una confirmación en pantalla con la hora exacta registrada.
+
+## Consultar Historial
+1.  Toque la opción **"Historial de Marcaciones"**.
+2.  Verá una lista de sus actividades recientes, con fechas y horas detalladas.
+
+## Consultar Horarios y Pagos
+- **Horarios**: Acceda a "Horarios Asignados" para ver sus turnos de la semana.
+- **Roles de Pago**: Acceda a "Roles de Pago" para descargar o visualizar sus colillas de pago mensuales.
+
+# Portal Web (Administradores)
+
+El portal web permite a los gestores administrar integralmente el sistema.
+
+## Acceso al Sistema
+1.  Ingrese desde su navegador a la dirección URL proporcionada por el equipo de TI (por ejemplo: `http://gestion.tuempresa.com`).
+2.  Inicie sesión con sus credenciales de Administrador o RRHH.
+
+## Panel de Control (Dashboard)
+Al ingresar, verá un resumen ejecutivo con:
+- Número total de empleados activos.
+- Asistencias registradas en el día.
+- Alertas de empleados ausentes o llegadas tardías.
+
+## Gestión de Empleados
+Para administrar el personal:
+
+1.  Navegue a la sección **"Empleados"** en el menú lateral.
+2.  **Crear Empleado**:
+    - Haga clic en el botón **"Nuevo Empleado"**.
+    - Complete el formulario con: Datos personales, Correo, Contraseña temporal, Cargo y Departamento.
+    - Defina la **Tarifa por Hora** y el **Rol** (Empleado, Admin, etc.).
+    - Guarde los cambios.
+3.  **Editar Empleado**: Busque al empleado en la lista y haga clic en el icono de lápiz para modificar sus datos.
+4.  **Desactivar**: Use el icono de papelera. *Nota: El sistema realiza un borrado lógico (soft delete) para no perder el historial de asistencias.*
+
+## Gestión de Horarios
+1.  Vaya a la sección **"Horarios"**.
+2.  Puede crear nuevos turnos rotativos definiendo hora de entrada y salida.
+3.  Asigne estos horarios a empleados específicos o departamentos enteros.
+
+## Reportes y Nómina
+Acceda a la sección de **Reportes** para generar informes:
+
+- **Reporte de Asistencia**: Seleccione un rango de fechas para ver entradas, salidas y horas trabajadas por empleado.
+- **Cálculo de Nómina**: 
+    - El sistema puede pre-calcular la nómina basándose en las horas registradas y la tarifa del empleado.
+    - Exporte los resultados a **PDF** o **Excel** para su procesamiento final.
+
+# Soporte
+
+Si experimenta problemas técnicos, por favor contacte al departamento de TI o a los administradores del sistema (Grupo 8).
