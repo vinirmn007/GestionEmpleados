@@ -1,0 +1,226 @@
+version: '3.8'
+
+services:
+  #API HATEWAY KONG
+  kong-gateway:
+    image: kong:latest
+    container_name: kong-gateway
+    environment:
+      KONG_DATABASE: "off"
+      
+      KONG_DECLARATIVE_CONFIG: "/etc/kong/kong.yaml"
+      
+      KONG_PROXY_LISTEN: "0.0.0.0:8000"
+      KONG_ADMIN_LISTEN: "0.0.0.0:8001"
+      
+      KONG_STATUS_LISTEN: "0.0.0.0:8002"
+
+    ports:
+      - "8000:8000" 
+      - "8001:8001" 
+
+    volumes:
+      - ./APIGateway/kong.yaml:/etc/kong/kong.yaml
+
+    networks:
+      - sge-network
+    depends_on:
+      servicio-autenticacion:
+        condition: service_healthy
+      servicio-usuarios:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/status"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  #DB
+  db-sge:
+    image: mariadb:latest
+    container_name: db-sge
+    environment:
+      MARIADB_ROOT_PASSWORD: "al.22825"
+
+      MARIADB_DATABASE: "servicio_usuarios"
+      MARIADB_USER: "fastapi_user"
+      MARIADB_PASSWORD: "12345"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - sge-network
+    healthcheck:
+
+      test: ["CMD-SHELL", "mariadb-admin ping -h localhost -u root -p\"$$MARIADB_ROOT_PASSWORD\""]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+      start_period: 20s
+
+  #MICROSERVICIOS
+  #autenticacion
+  servicio-autenticacion:
+    build:
+      context: ./ServicioAutenticacion
+    container_name: servicio-autenticacion
+    restart: always
+    networks:
+      - sge-network
+    environment:
+      AUTHJWT_SECRET_KEY: "alexisjosue12345"
+      DB_HOST: "db-sge"
+      DB_USER: "fastapi_user"
+      DB_PASSWORD: "12345"
+      DB_NAME: "servicio_usuarios"
+      USER_SERVICE_URL: "http://servicio-usuarios:9001"
+    volumes:
+      - ./ServicioAutenticacion:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 9000 --reload
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/docs"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  #usuarios
+  servicio-usuarios:
+    build:
+      context: ./ServicioUsuarios
+    container_name: servicio-usuarios
+    restart: always
+    depends_on:
+      db-sge:
+        condition: service_healthy
+    environment:
+      AUTHJWT_SECRET_KEY: "alexisjosue12345"
+      DB_HOST: "db-sge"
+      DB_USER: "fastapi_user"
+      DB_PASSWORD: "12345"
+      DB_NAME: "servicio_usuarios"
+    volumes:
+      - ./ServicioUsuarios:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 9001 --reload
+    networks:
+      - sge-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9001/docs"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  #asistencia
+  servicio-asistencia:
+    build:
+      context: ./ServicioAsistencia
+    container_name: servicio-asistencia
+    restart: always
+    depends_on:
+      db-sge:
+        condition: service_healthy
+    environment:
+      AUTHJWT_SECRET_KEY: "alexisjosue12345"
+      DB_HOST: "db-sge"
+      DB_USER: "fastapi_user"
+      DB_PASSWORD: "12345"
+      DB_NAME: "servicio_usuarios"
+    volumes:
+      - ./ServicioAsistencia:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 9002 --reload
+    networks:
+      - sge-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9002/attendance/ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  #horarios
+  servicio-horarios:
+    build:
+      context: ./ServicioHorarios
+    container_name: servicio-horarios
+    restart: always
+    depends_on:
+      servicio-usuarios:
+        condition: service_healthy
+    environment:
+      USER_SERVICE_URL: "http://servicio-usuarios:9001"
+      DB_HOST: "db-sge"
+      DB_USER: "fastapi_user"
+      DB_PASSWORD: "12345"
+      DB_NAME: "servicio_usuarios"
+      AUTHJWT_SECRET_KEY: "alexisjosue12345"
+    volumes:
+      - ./ServicioHorarios:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 9003 --reload
+    networks:
+      - sge-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9003/docs"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  #nomina
+  servicio-nomina:
+    build:
+      context: ./ServicioNomina
+    container_name: servicio-nomina
+    restart: always
+    depends_on:
+      db-sge:
+        condition: service_healthy
+    environment:
+      AUTHJWT_SECRET_KEY: "alexisjosue12345"
+      URL_REPORTES: "http://servicio-reportes:9005"
+      DB_HOST: "db-sge"
+      DB_USER: "fastapi_user"
+      DB_PASSWORD: "12345"
+      DB_NAME: "servicio_usuarios"
+    volumes:
+      - ./ServicioNomina:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 9004 --reload
+    networks:
+      - sge-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9004/docs"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  #reportes
+  servicio-reportes:
+    build:
+      context: ./ServicioReportes
+    container_name: servicio-reportes
+    restart: always
+    environment:
+      URL_USUARIOS: "http://servicio-usuarios:9001"
+      URL_ASISTENCIA: "http://servicio-asistencia:9002"
+      URL_NOMINA: "http://servicio-nomina:9004"
+    volumes:
+      - ./ServicioReportes:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 9005 --reload
+    networks:
+      - sge-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9005/docs"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+networks:
+  sge-network:
+    driver: bridge
+
+volumes:
+  db_data:

@@ -1,5 +1,7 @@
-# Gestión de Empleados
+# Sistema de Gestión de Empleados
+
 **Carrera de Computación | UNL**
+**Computación**
 
 ## Grupo 8
 - Josue Torres
@@ -7,67 +9,88 @@
 
 ---
 
-## Requerimientos del Proyecto
-- **Python**: 3.12.6  
-- **FastAPI**: 0.0.13  
+## Descripción del Proyecto
+Este es un **Sistema Integral de Gestión de Empleados** diseñado bajo una arquitectura de **microservicios**. El sistema permite administrar usuarios, roles de pago, control de asistencia (con validación biométrica en móvil) y gestión de horarios.
+
+La solución se compone de tres partes principales:
+1.  **Backend de Microservicios**: Expuestos a través de un API Gateway (Kong).
+2.  **Aplicación Móvil**: Desarrollada en Flutter para empleados (marcación de asistencia, visualización de roles y horarios).
+3.  **Frontend Web**: Panel administrativo (Svelte).
 
 ---
 
-## Arquitectura Seleccionada
-Se implementará la **arquitectura de microservicios**, utilizando principalmente el framework **FastAPI**, aunque no se descarta el uso de otras tecnologías según las necesidades del proyecto.
+## Arquitectura y Tecnologías
+
+### Backend (Microservicios)
+Desarrollado en **Python (FastAPI)** y contenerizado con **Docker**.
+- **Servicio Usuarios**: Gestión de perfiles y autenticación (JWT).
+- **Servicio Asistencia**: Registro de marcaciones de entrada/salida.
+- **Servicio Nómina**: Generación y consulta de roles de pago.
+- **Servicio Horarios**: Gestión de turnos laborales.
+- **API Gateway**: **Kong Gateway** para enrutamiento unificado.
+- **Base de Datos**: **MariaDB**.
+
+### Móvil
+Desarrollada en **Flutter**.
+- Autenticación Biométrica.
+- Geolocalización para marcaciones.
+- Consumo de API REST segura.
 
 ---
 
-## Estándares de Codificación Adoptados
-Se seguirán estándares basados en **legibilidad, consistencia, escalabilidad y descriptividad**:
+## Instrucciones de Despliegue
 
-- Uso de **CamelCase** para nombres de variables y funciones.
-- Uso correcto de **sangrías**.
-- Inclusión de **comentarios descriptivos**.
-- **Modularización** de los componentes.
+### 1. Backend (Docker)
+La forma más sencilla de ejecutar todo el backend es utilizando Docker Compose.
+
+**Requisitos**: Docker Desktop instalado.
+
+```bash
+# Navegar a la carpeta del backend (si aplica) o raíz
+cd backend
+
+# Levantar todos los servicios
+docker-compose up --build -d
+```
+Esto iniciará:
+- MariaDB (Base de datos)
+- Kong Gateway (Puerto 8000)
+- Todos los microservicios (Puertos 9000-9005)
+
+### 2. Aplicación Móvil
+**Requisitos**: Flutter SDK instalado.
+
+```bash
+cd mobile
+
+# Instalar dependencias
+flutter pub get
+
+# Ejecutar en modo debug (con dispositivo conectado)
+flutter run
+
+# Generar APK para producción
+flutter build apk --release
+```
+_Nota: El APK generado se encuentra como `app-release.apk` en la ruta base del proyecto._
+
+### 3. Frontend Web (Svelte)
+**Requisitos**: Node.js instalado.
+
+```bash
+cd frontend
+
+# Instalar dependencias
+npm install
+
+# Ejecutar en modo desarrollo
+npm run dev
+```
+_El panel administrativo estará disponible en `http://localhost:5173` (o el puerto que indique la consola)._
 
 ---
 
-## Flujo de Trabajo con GitFlow
-Se implementará **GitFlow**, utilizando las siguientes ramas para gestionar los cambios:
+## Video Demostrativo
+Puedes ver una demostración completa del funcionamiento del sistema en el siguiente enlace:
 
-- `main`
-- `develop`
-- `feature/...`
-
----
-
-## Instrucciones de Ejecución
-
-### 1. Instalar Python 3.12.6
-Descargar e instalar la versión 3.12.6 desde la página oficial de Python.
-
-### 2. Crear un Entorno Virtual
-
-#### En Windows:
-- Abre PowerShell o CMD en la carpeta de tu proyecto.  
-- Crea el entorno virtual (ejemplo: .venv como nombre de carpeta):  
-```python -m venv .venv```  
-- Activa el entorno virtual:  
-```.\.venv\Scripts\activate```  
-
-### En Linux:  
-- Entra a tu proyecto:  
-```cd ruta/al/proyecto```  
-- Crea el entorno virtual:  
-```python3.12 -m venv .venv```  
-- Activa el entorno virtual:  
-```source .venv/bin/activate```  
-
-### 3. Instalar FastAPI:  
-```pip install "fastapi[standard]"```
-
-### 4. Ejecutar el proyecto:  
-```fastapi dev main.py```
-
-## Instalar MariaDB  
-```sudo apt update```  
-```sudo apt install mariadb-server mariadb-client```  
-```sudo mariadb-secure-installation```  
-Verificar la instalacion:  
-```mariadb -u root -p```  
+[**Ver Video Demostrativo en Google Drive**](https://drive.google.com/file/d/1ELcos1lknoxxnzZ0tGsjsFpZXiHZBo3E/view?usp=sharing)

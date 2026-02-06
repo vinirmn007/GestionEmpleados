@@ -1,0 +1,53 @@
+_format_version: "3.0"
+
+services:
+- name: auth-service
+  url: http://servicio-autenticacion:9000
+- name: user-service
+  url: http://servicio-usuarios:9001
+- name: assist-service
+  url: http://servicio-asistencia:9002
+- name: schedules-service
+  url: http://servicio-horarios:9003
+- name: nomina-service
+  url: http://servicio-nomina:9004
+- name: reports-service
+  url: http://servicio-reportes:9005
+
+routes:
+- name: auth-route
+  service: auth-service
+  paths:
+  - /auth
+  strip_path: false
+
+- name: user-route
+  service: user-service
+  paths:
+  - /usuarios
+  strip_path: false
+  
+- name: assist-route
+  service: assist-service
+  paths:
+  - /attendance
+  strip_path: false
+  
+- name: schedules-route
+  service: schedules-service
+  paths:
+  - /horarios
+  strip_path: true
+  
+- name: nomina-route
+  service: nomina-service
+  paths:
+  - /nomina
+  strip_path: true
+  
+- name: reports-route
+  service: reports-service
+  paths:
+  - /reports
+  strip_path: false
+

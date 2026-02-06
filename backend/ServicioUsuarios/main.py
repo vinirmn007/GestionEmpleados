@@ -1,0 +1,32 @@
+from fastapi import FastAPI
+# Trigger reload
+from database import Base, engine
+from routes.usuario_router import router as usuario_router
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI(title="Servicio Usuarios")
+
+#origenes permitidos
+origins = [
+    #Para pruebas:"http://localhost:9000"
+    #"http://servicio-autenticacion:9000" #ruta del docker-compose
+    "http://localhost:5173",
+    "http://servicio-autenticacion:9000",
+    "http://0.0.0.0:5173"
+]
+
+#cinfigurar cors
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins= ["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.get("/")
+def read_root():
+    return {"mensaje": "¡Hola, Servicio Usuarios está funcionando!"}
+
+app.include_router(usuario_router)
+Base.metadata.create_all(bind=engine)

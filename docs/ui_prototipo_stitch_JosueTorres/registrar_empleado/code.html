@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registrar Empleado</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <!-- Fuentes -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#137fec",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101922",
+          },
+          fontFamily: {
+            display: ["Inter", "sans-serif"],
+          },
+          borderRadius: {
+            DEFAULT: "0.25rem",
+            lg: "0.5rem",
+            xl: "0.75rem",
+            full: "9999px",
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+    }
+    .material-symbols-outlined.fill {
+      font-variation-settings: "FILL" 1;
+    }
+  </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-[#0d141b] dark:text-slate-200">
+
+  <div class="flex flex-col min-h-screen w-full">
+    <div class="flex flex-1 h-full">
+
+      <!-- SIDEBAR -->
+      <aside class="hidden md:flex flex-col justify-between w-64 h-full border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark p-4">
+
+        <div class="flex flex-col gap-4">
+          <!-- Perfil -->
+          <div class="flex items-center gap-3 p-2">
+            <div class="size-10 rounded-full bg-cover bg-center"
+              style='background-image:url("https://lh3.googleusercontent.com/aida-public/AB6AXuAeCm8ww3x9ba6hZCUEKRpeH_M4eUGASCTuSCgbqgPHlBcoNw3oR4Q1E7G6I-l9geAzIJFj00kaWY16gcE6yB8n_WBk3ESiN7-_Mo4_dUNYZQaUb0oT6U3POhCRr7x_M9")'>
+            </div>
+            <div>
+              <p class="text-sm font-medium dark:text-slate-200">Admin</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400">admin@empresa.com</p>
+            </div>
+          </div>
+
+          <!-- Navegación -->
+          <nav class="flex flex-col gap-1">
+            <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+              <span class="material-symbols-outlined text-xl">dashboard</span>
+              <span class="text-sm font-medium">Dashboard</span>
+            </a>
+
+            <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary">
+              <span class="material-symbols-outlined fill text-xl">group</span>
+              <span class="text-sm font-medium">Empleados</span>
+            </a>
+
+            <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+              <span class="material-symbols-outlined text-xl">apartment</span>
+              <span class="text-sm font-medium">Departamentos</span>
+            </a>
+
+            <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+              <span class="material-symbols-outlined text-xl">assessment</span>
+              <span class="text-sm font-medium">Reportes</span>
+            </a>
+          </nav>
+        </div>
+
+        <!-- Footer del sidebar -->
+        <nav class="flex flex-col gap-1">
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+            <span class="material-symbols-outlined text-xl">settings</span>
+            <span class="text-sm font-medium">Configuración</span>
+          </a>
+
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+            <span class="material-symbols-outlined text-xl">logout</span>
+            <span class="text-sm font-medium">Salir</span>
+          </a>
+        </nav>
+
+      </aside>
+
+      <!-- MAIN -->
+      <main class="flex-1 py-8 px-4 sm:px-6 lg:px-10">
+        <div class="max-w-4xl mx-auto">
+
+          <!-- Encabezado -->
+          <header class="pb-8">
+            <h1 class="text-3xl font-bold tracking-tight dark:text-white">Registrar Empleado</h1>
+            <p class="text-base text-slate-500 dark:text-slate-400">
+              Complete el formulario para agregar un nuevo miembro al equipo.
+            </p>
+          </header>
+
+          <!-- FORM CARD -->
+          <section class="bg-white dark:bg-slate-900/70 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
+            <form action="#" method="POST">
+
+              <!-- PERSONAL -->
+              <div class="p-6 sm:p-8">
+                <h2 class="text-lg font-semibold dark:text-white">Información Personal</h2>
+                <hr class="my-4 border-slate-200 dark:border-slate-800" />
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+                  <!-- Nombre -->
+                  <label class="flex flex-col">
+                    <span class="text-sm font-medium dark:text-slate-300 pb-2">Nombre</span>
+                    <input type="text" placeholder="ej. Juan"
+                      class="form-input h-11 rounded-lg border border-slate-300 dark:border-slate-700 bg-background-light dark:bg-background-dark p-3 text-sm placeholder-slate-400 dark:placeholder-slate-500 focus:ring-primary/50" />
+                  </label>
+
+                  <!-- Apellido -->
+                  <label class="flex flex-col">
+                    <span class="text-sm font-medium dark:text-slate-300 pb-2">Apellido</span>
+                    <input type="text" placeholder="ej. Pérez"
+                      class="form-input h-11 rounded-lg border border-slate-300 dark:border-slate-700 bg-background-light dark:bg-background-dark p-3 text-sm" />
+                  </label>
+
+                  <!-- Correo -->
+                  <label class="flex flex-col">
+                    <span class="text-sm font-medium dark:text-slate-300 pb-2">Correo electrónico</span>
+                    <input type="email" placeholder="ej. juan.perez@empresa.com"
+                      class="form-input h-11 rounded-lg border border-slate-300 dark:border-slate-700 bg-background-light dark:bg-background-dark p-3 text-sm" />
+                  </label>
+
+                  <!-- Teléfono -->
+                  <label class="flex flex-col">
+                    <span class="text-sm font-medium dark:text-slate-300 pb-2">Teléfono</span>
+                    <input type="tel" placeholder="ej. +1 555 123 4567"
+                      class="form-input h-11 rounded-lg border border-slate-300 dark:border-slate-700 bg-background-light dark:bg-background-dark p-3 text-sm" />
+                  </label>
+                </div>
+              </div>
+
+              <!-- LABORAL -->
+              <div class="p-6 sm:p-8 pt-0">
+                <h2 class="text-lg font-semibold dark:text-white mt-6">Información Laboral</h2>
+                <hr class="my-4 border-slate-200 dark:border-slate-800" />
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+                  <!-- Cargo -->
+                  <label class="flex flex-col">
+                    <span class="text-sm font-medium dark:text-slate-300 pb-2">Cargo</span>
+                    <input type="text" placeholder="ej. Desarrollador de Software"
+                      class="form-input h-11 rounded-lg border border-slate-300 dark:border-slate-700 bg-background-light dark:bg-background-dark p-3 text-sm" />
+                  </label>
+
+                  <!-- Departamento -->
+                  <label class="flex flex-col">
+                    <span class="text-sm font-medium dark:text-slate-300 pb-2">Departamento</span>
+                    <input type="text" placeholder="ej. Tecnología"
+                      class="form-input h-11 rounded-lg border border-slate-300 dark:border-slate-700 bg-background-light dark:bg-background-dark p-3 text-sm" />
+                  </label>
+
+                  <!-- Fecha -->
+                  <label class="flex flex-col sm:col-span-2">
+                    <span class="text-sm font-medium dark:text-slate-300 pb-2">Fecha de ingreso</span>
+                    <input type="date"
+                      class="form-input h-11 rounded-lg border border-slate-300 dark:border-slate-700 bg-background-light dark:bg-background-dark p-3 text-sm" />
+                  </label>
+                </div>
+              </div>
+
+              <!-- ACTIONS -->
+              <div class="flex justify-end gap-4 bg-slate-50 dark:bg-slate-900/70 py-4 px-6 sm:px-8 border-t border-slate-200 dark:border-slate-800 rounded-b-xl">
+
+                <button type="button"
+                  class="rounded-lg bg-slate-200 dark:bg-slate-700 px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600">
+                  Cancelar
+                </button>
+
+                <button type="submit"
+                  class="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary/80">
+                  Guardar
+                </button>
+
+              </div>
+            </form>
+          </section>
+
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+</body>
+</html>

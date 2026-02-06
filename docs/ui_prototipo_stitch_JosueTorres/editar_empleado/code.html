@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editar Empleado</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <!-- Tailwind Custom Config -->
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922"
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px"
+                    }
+                }
+            }
+        };
+    </script>
+
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+        }
+    </style>
+</head>
+
+<body class="font-display bg-background-light dark:bg-background-dark">
+<div class="flex min-h-screen w-full">
+
+    <!-- ASIDE / SIDEBAR -->
+    <aside class="w-64 flex-shrink-0 flex flex-col bg-white dark:bg-background-dark border-r border-slate-200 dark:border-slate-800 p-4">
+
+        <!-- Profile Section -->
+        <div class="flex items-center gap-3">
+            <div class="size-10 rounded-full bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA_Apiaug5ENKWhlWxlXR_mMox4znwm4T80n7SaGMHQ7dunP_iA9cjjrclV221GFsT0ch33yeFJymLhMkYkQlQvm_qWXzGu3AOzAJ3d-9LbdcTw879tgiEV-OEuLC-E8REfy6aOhkLVu6n6wdwcPkUKnoa4nJNeWCrCXioMya_sKEnEtFBqSWS4mh1yOAcCYrZ6zlxXm-SspsZg1D7QDPoYp9U5kKHfzpzx1E1BROk9M2jDxZ5LU-PiB6ZwN4OcRdQc3gIISWYyGqg");'></div>
+            <div class="flex flex-col">
+                <h1 class="text-slate-900 dark:text-slate-200 text-base font-medium">Gestión Corp</h1>
+                <p class="text-slate-500 dark:text-slate-400 text-sm">Panel de Administrador</p>
+            </div>
+        </div>
+
+        <!-- NAVIGATION -->
+        <nav class="flex flex-col gap-2 mt-6 flex-1">
+            <a href="#" class="nav-item">
+                <span class="material-symbols-outlined">dashboard</span> Dashboard
+            </a>
+
+            <a href="#" class="nav-item bg-primary/10 text-primary dark:bg-primary/20 rounded-lg">
+                <span class="material-symbols-outlined fill">group</span> Empleados
+            </a>
+
+            <a href="#" class="nav-item">
+                <span class="material-symbols-outlined">apartment</span> Departamentos
+            </a>
+
+            <a href="#" class="nav-item">
+                <span class="material-symbols-outlined">assessment</span> Reportes
+            </a>
+        </nav>
+
+        <!-- Footer links -->
+        <div class="flex flex-col gap-1">
+            <a href="#" class="nav-item">
+                <span class="material-symbols-outlined">settings</span> Configuración
+            </a>
+            <a href="#" class="nav-item">
+                <span class="material-symbols-outlined">logout</span> Salir
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 p-8">
+        <div class="mx-auto max-w-4xl">
+
+            <!-- Breadcrumb -->
+            <nav class="flex flex-wrap gap-2 mb-4 text-sm">
+                <a class="crumb" href="#">Empleados</a>
+                <span>/</span>
+                <a class="crumb" href="#">Juan Pérez</a>
+                <span>/</span>
+                <span class="font-medium text-slate-800 dark:text-slate-200">Editar</span>
+            </nav>
+
+            <!-- Heading -->
+            <header class="mb-8">
+                <h1 class="text-3xl font-bold text-slate-900 dark:text-white">Editar Empleado</h1>
+            </header>
+
+            <!-- FORM -->
+            <section class="bg-white dark:bg-background-dark rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
+                <div class="p-6 md:p-8">
+
+                    <!-- Personal Info -->
+                    <div class="border-b border-slate-200 dark:border-slate-800 pb-6 mb-6">
+                        <h3 class="section-title">Información Personal</h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                            
+                            <label class="form-field">
+                                <span>Nombre</span>
+                                <input type="text" value="Juan" class="input" />
+                            </label>
+
+                            <label class="form-field">
+                                <span>Apellido</span>
+                                <input type="text" value="Pérez" class="input" />
+                            </label>
+
+                            <label class="form-field">
+                                <span>Correo Electrónico</span>
+                                <input type="email" value="juan.perez@gestioncorp.com" class="input" />
+                            </label>
+
+                            <label class="form-field">
+                                <span>Teléfono</span>
+                                <input type="tel" value="+1 (555) 123-4567" class="input" />
+                            </label>
+
+                        </div>
+                    </div>
+
+                    <!-- Job Info -->
+                    <div>
+                        <h3 class="section-title">Información Laboral</h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+
+                            <label class="form-field">
+                                <span>Cargo</span>
+                                <input type="text" value="Desarrollador Frontend" class="input" />
+                            </label>
+
+                            <label class="form-field">
+                                <span>Departamento</span>
+                                <input type="text" value="Tecnología" class="input" />
+                            </label>
+
+                            <label class="form-field md:col-span-1">
+                                <span>Fecha de Ingreso</span>
+                                <input type="date" value="2022-08-15" class="input" />
+                            </label>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Form Actions -->
+                <footer class="flex justify-end gap-3 p-6 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-200 dark:border-slate-800 rounded-b-xl">
+                    <button type="button" class="btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn-primary">Actualizar</button>
+                </footer>
+            </section>
+
+        </div>
+    </main>
+</div>
+
+<!-- Utility Classes -->
+<style>
+    .nav-item {
+        @apply flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800;
+    }
+    .crumb {
+        @apply text-slate-500 dark:text-slate-400 hover:text-primary;
+    }
+    .section-title {
+        @apply text-lg font-bold text-slate-900 dark:text-slate-200;
+    }
+    .form-field {
+        @apply flex flex-col text-sm font-medium text-slate-700 dark:text-slate-300 gap-2;
+    }
+    .input {
+        @apply h-11 rounded-lg px-3 text-sm border border-slate-300 dark:border-slate-700 bg-background-light dark:bg-slate-900/50 text-slate-900 dark:text-slate-200 focus:ring-2 focus:ring-primary/50 outline-none;
+    }
+    .btn-secondary {
+        @apply px-4 py-2 text-sm font-semibold rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition;
+    }
+    .btn-primary {
+        @apply px-4 py-2 text-sm font-semibold rounded-lg bg-primary text-white hover:bg-primary/90 transition;
+    }
+</style>
+</body>
+</html>
