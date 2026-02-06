@@ -16,19 +16,19 @@ class AuthProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   bool get isAuthenticated => _user != null;
 
-  Future<bool> login(String username, String password) async {
+  Future<bool> login(String email, String password) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      _user = await _authService.login(username, password);
+      _user = await _authService.login(email, password);
       _isLoading = false;
       notifyListeners();
       return _user != null;
     } catch (e) {
       _isLoading = false;
-      _errorMessage = "Usuario o contraseña incorrectos"; // Simplified error
+      _errorMessage = "Correo o contraseña incorrectos"; // Simplified error
       notifyListeners();
       return false;
     }

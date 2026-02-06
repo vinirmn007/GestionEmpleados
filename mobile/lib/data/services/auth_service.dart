@@ -9,17 +9,15 @@ class AuthService {
 
   AuthService(this._dioClient);
 
-  Future<User?> login(String username, String password) async {
+  Future<User?> login(String email, String password) async {
     try {
       final response = await _dioClient.dio.post(
         ApiConstants.loginEndpoint,
         data: {
-          'username': username,
+          'email': email,
           'password': password,
         },
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType, // fastAPI often uses form data for auth
-        ), 
+        // Using standard JSON content type since we are sending a JSON body
       );
 
       if (response.statusCode == 200) {

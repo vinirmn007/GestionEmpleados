@@ -44,3 +44,34 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# --------------------
+# Additional Flutter/Dart ignores
+# --------------------
+
+# Android
+**/android/local.properties
+**/android/key.properties
+**/android/*.keystore
+**/android/*.jks
+
+# iOS
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/app.flx
+**/ios/Flutter/app.zip
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.m
+
+# MacOS
+**/macos/Flutter/GeneratedPluginRegistrant.swift
+
+# Windows
+**/windows/flutter/ephemeral/
+**/windows/runner/resources/*
+
+# Linux
+**/linux/flutter/ephemeral/
+
+# Exceptions
+!**/android/app/src/main/assets/
+!**/android/app/src/main/res/

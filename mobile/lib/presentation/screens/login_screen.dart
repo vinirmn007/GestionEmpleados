@@ -12,14 +12,14 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _obscurePassword = true;
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void _handleLogin() async {
     if (_formKey.currentState!.validate()) {
       final success = await context.read<AuthProvider>().login(
-        _usernameController.text,
+        _emailController.text,
         _passwordController.text,
       );
       if (success) {
@@ -83,19 +83,24 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 40),
                 
-                // Username
+                // Email
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text("Usuario", style: Theme.of(context).textTheme.titleMedium),
+                  child: Text("Correo Electrónico", style: Theme.of(context).textTheme.titleMedium),
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
-                  controller: _usernameController,
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.person_outline),
-                    hintText: "Ingresa tu usuario",
+                    prefixIcon: Icon(Icons.email_outlined),
+                    hintText: "Ingresa tu correo",
                   ),
-                  validator: (value) => value!.isEmpty ? "Campo requerido" : null,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) return "Campo requerido";
+                    if (!value.contains('@')) return "Correo inválido";
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 24),
 
